@@ -4,13 +4,16 @@ import { useLocation, /* useNavigate, */ useParams } from "react-router-dom";
 import Modal from "../../Components/Modal";
 import dompurify from "dompurify";
 import { kyApi, getPrice } from "../../Api/Api";
+import { useSelector } from "react-redux";
 
 function GoodsDetail() {
+  const login = useSelector(state => state.user);
   const sanitizer = dompurify.sanitize;
   const thisLocation = useLocation();
   //const navi = useNavigate();
   const { goodscode } = useParams();
   const [goods, setGoods] = useState(null);
+  const [goodsPrice, setGoodsPrice] = useState(0);
   const [content, setContent] = useState("");
   const [imgLoaded, setImgLoaded] = useState(false);
   const [loadMsg, setLoadMsg] = useState("상품을 불러오고 있습니다");
@@ -19,6 +22,7 @@ function GoodsDetail() {
   const [modalType, setModalType] = useState("");
 
   useEffect(() => {
+    console.log(login);
     getGoods();
     //eslint-disable-next-line
   }, [thisLocation]);
@@ -38,6 +42,7 @@ function GoodsDetail() {
         .json();
       console.log(res);
       setGoods(res.goods);
+      setGoodsPrice(getPrice(res.goods.discountPrice));
       contentForm(res.goods.content);
       if (isMobileDevice()) {
         window.scrollTo(0, 560);
@@ -76,6 +81,47 @@ function GoodsDetail() {
     setContent(replacedText);
   };
 
+  const buyItSelf = async () => {
+    if (login.phone === "") {
+      return alert("로그인 후 이용 가능합니다");
+    }
+    const data = {
+      phoneNo: login.phone,
+      goodsCode: goods.goodsCode,
+      limitDay: goods.limitDay,
+      goodsImgB: goods.goodsImgB,
+      goodsName: goods.goodsName,
+      callbackNo: login.phone,
+      discountPrice: goodsPrice,
+      realPrice: Number(goods.realPrice),
+    };
+
+    const res = await kyApi
+      .post("/api/v1/cafecon/common/goods/send", { json: data })
+      .json();
+    console.log(res);
+  };
+
+  const buyIt = async (phone1, phone2) => {
+    const data = {
+      phoneNo: phone2,
+      goodsCode: goods.goodsCode,
+      limitDay: goods.limitDay,
+      goodsImgB: goods.goodsImgB,
+      goodsName: goods.goodsName,
+      callbackNo: phone1,
+      discountPrice: goodsPrice,
+      realPrice: Number(goods.realPrice),
+    };
+
+    const res = await kyApi
+      .post("/api/v1/cafecon/common/goods/send", { json: data })
+      .json();
+    console.log(res);
+    if (res.code === "0000") return "완료";
+    return "실패";
+  };
+
   return (
     <>
       {goods ? (
@@ -112,7 +158,7 @@ function GoodsDetail() {
                 </h2>
                 <div className="mt-5">
                   <span className="text-2xl lg:text-4xl font-bold text-indigo-500">
-                    {getPrice(Number(goods.discountPrice)).toLocaleString()}
+                    {goodsPrice ? goodsPrice.toLocaleString() : 0}
                   </span>
                   <span className="text-xl lg:text-2xl ml-1">Point</span>
                 </div>
@@ -145,7 +191,7 @@ function GoodsDetail() {
                     <button
                       className="w-fit transition-all duration-150 ease-in-out bg-indigo-500 text-white py-2 px-5 rounded hover:bg-indigo-700"
                       onClick={() => {
-                        console.log("구매하기");
+                        buyItSelf();
                       }}
                     >
                       포인트로 구입하기
@@ -190,6 +236,9 @@ function GoodsDetail() {
         setModalOn={setModalOn}
         modalType={modalType}
         setModalType={setModalType}
+        buyIt={buyIt}
+        login={login}
+        goodsPrice={goodsPrice}
       />
 
       {!imgLoaded && loading && (

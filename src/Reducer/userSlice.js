@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   userId: "",
-  userName: "",
+  managerName: "",
   phone: "",
-  admin: false,
+  point: 0,
   role: "",
   lastLogin: null,
 };
@@ -14,8 +14,8 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     loginUser: (state, action) => {
-      if (action.payload.userName !== undefined) {
-        state.userName = action.payload.userName;
+      if (action.payload.managerName !== undefined) {
+        state.managerName = action.payload.managerName;
       }
       if (action.payload.userId !== undefined) {
         state.userId = action.payload.userId;
@@ -25,6 +25,9 @@ const userSlice = createSlice({
       }
       if (action.payload.admin !== undefined) {
         state.admin = action.payload.admin;
+      }
+      if (action.payload.point !== undefined) {
+        state.point = action.payload.point;
       }
       if (action.payload.role !== undefined) {
         state.role = action.payload.role;

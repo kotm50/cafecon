@@ -12,6 +12,9 @@ function Modal(props) {
               <Gifticon
                 setModalOn={props.setModalOn}
                 setModalType={props.setModalType}
+                buyIt={props.buyIt}
+                user={props.login}
+                goodsPrice={props.goodsPrice}
               />
             ) : props.modalType === "join" ? (
               <>
@@ -38,6 +41,9 @@ Modal.propTypes = {
   setModalOn: PropTypes.func.isRequired,
   setModalType: PropTypes.func.isRequired,
   modalType: PropTypes.string.isRequired,
+  buyIt: PropTypes.func,
+  login: PropTypes.object,
+  goodsPrice: PropTypes.number,
 };
 
 export default Modal;

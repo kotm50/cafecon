@@ -7,6 +7,8 @@ import GoodsList from "./Pages/GoodsList";
 import GoodsDetail from "./Pages/GoodsDetail";
 import ToTop from "./Components/ToTop";
 import Join from "./Pages/Join";
+import Login from "./Pages/Login";
+import UserMain from "./Pages/UserMain";
 function App() {
   return (
     <>
@@ -17,7 +19,10 @@ function App() {
           <Route path="list/:category?/:brand?" element={<GoodsList />} />
           <Route path="detail/:goodscode?" element={<GoodsDetail />} />
         </Route>
-        <Route path="/join" element={<Join />} />
+        <Route path="/user" element={<UserMain />}>
+          <Route path="login" element={<Login />} />
+          <Route path="join" element={<Join />} />
+        </Route>
       </Routes>
       <ToTop />
     </>

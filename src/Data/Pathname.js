@@ -1,1 +1,1 @@
-export const pathname = ["/join", "/login"];
+export const pathname = ["user"];

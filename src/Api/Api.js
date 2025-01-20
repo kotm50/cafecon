@@ -77,11 +77,12 @@ export const useLogout = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await kyApi.post("/api/v1/formMail_admin/logout").json();
+      const res = await kyApi.post("/api/v1/cafecon/user/logout").json();
       if (res.code === "C000" || res.code === "E403") {
         navigate("/"); // 로그아웃 후 홈 화면으로 리디렉션
         dispatch(clearUser()); // Redux 상태 초기화
       }
+      console.log(res);
     } catch (error) {
       console.error("로그아웃 오류:", error);
     }

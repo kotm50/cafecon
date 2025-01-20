@@ -5,12 +5,13 @@ import { useState } from "react";
 import UploadFile from "../../Components/UploadFile";
 import { useNavigate } from "react-router-dom";
 import { smsAuth, smsCert } from "../../Api/Auth";
-//import { kyApi } from "../../Api/Api";
+import { deleteFile, kyApi, uploadFile } from "../../Api/Api";
+import { Helmet } from "react-helmet";
 
 function Join() {
   const navi = useNavigate();
   const [id, setId] = useState("");
-  const [userName, setUserName] = useState("");
+  const [managerName, setUserName] = useState("");
   const [pwd, setPwd] = useState("");
   const [pwdChk, setPwdChk] = useState("");
   const [correctId, setCorrectId] = useState(true);
@@ -20,6 +21,8 @@ function Join() {
 
   const [pwdMsg, setPwdMsg] = useState("");
   const [mainAddr, setMainAddr] = useState("주소찾기를 눌러주세요");
+  const [sido, setSido] = useState("");
+  const [sigungu, setSigungu] = useState("");
   const [phone, setPhone] = useState("");
   const [phoneChk, setPhoneChk] = useState(false);
   const [phoneCert, setPhoneCert] = useState("");
@@ -42,6 +45,9 @@ function Join() {
   const [modalOn, setModalOn] = useState(false);
   const [modalCount, setModalCount] = useState(0);
 
+  const [birth, setBirth] = useState("2000-01-01");
+  const [gender, setGender] = useState("여자");
+
   // 팝업창 상태 관리
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   /*
@@ -56,9 +62,69 @@ function Join() {
   };
   */
 
-  const join = e => {
+  const join = async e => {
     e.preventDefault();
-    console.log(e);
+    const { data, result } = await getData();
+    if (result !== "완료") {
+      return alert(result);
+    }
+    const res = await kyApi
+      .post("/api/v1/cafecon/user/join", {
+        json: data,
+      })
+      .json();
+    console.log(res);
+    if (res.code !== "C000") {
+      if (data.businessLicense)
+        await deleteFile(data.businessLicense, "company");
+      return alert(res.message);
+    } else {
+      alert("회원가입이 완료되었습니다");
+      navi("/user/login");
+    }
+  };
+
+  const getData = async () => {
+    const data = {};
+    if (!termsAgree) return { data, result: "이용약관에 동의해 주세요" };
+    if (!priAgree)
+      return { data, result: "개인정보 수집 및 이용에 동의해 주세요" };
+    if (!id) return { data, result: "아이디를 입력해 주세요" };
+    if (!correctId) return { data, result: "아이디 양식이 잘못되었습니다" };
+    if (!dupId) return { data, result: "사용중인 아이디 입니다" };
+    if (!managerName) return { data, result: "이름을 입력해 주세요" };
+    if (!pwd) return { data, result: "비밀번호를 입력해 주세요" };
+    if (!correctPwd) return { data, result: "비밀번호 양식이 잘못되었습니다" };
+    if (!pwdChk) return { data, result: "비밀번호를 한번 더 입력해 주세요" };
+    if (!correctPwdChk) return { data, result: "비밀번호가 일치하지 않습니다" };
+    if (!phone) return { data, result: "휴대폰 번호를 입력해 주세요" };
+    if (!phoneCertChk) return { data, result: "휴대폰 인증을 완료해 주세요" };
+    //if (!email) return { data, result: "이메일을 입력해 주세요" };
+    //if (!gender) return { data, result: "성별을 선택해 주세요" };
+    if (!birth) return { data, result: "생년월일을 입력해 주세요" };
+    if (!mainAddr) return { data, result: "주소를 입력해 주세요" };
+    data.userId = id;
+    data.managerName = managerName;
+    data.userPwd = pwd;
+    data.phone = phone;
+    data.email = email;
+    data.address = mainAddr;
+    data.sido = sido;
+    data.sigungu = sigungu;
+    //data.birth = birth;
+    //data.gender = gender;
+    data.agreeTerms = "Y";
+    data.agreePrivacy = "Y";
+    data.agreeMarketing = marketingAgree ? "Y" : "N";
+    if (company) data.companyName = company;
+    if (company) data.businessName = company;
+    if (companyNum) data.businessNo = companyNum;
+    if (taxEmail) data.businessEmail = taxEmail;
+    if (company && !taxEmail) data.businessEmail = email;
+    if (companyFile)
+      data.businessLicense = await uploadFile(companyFile, "company");
+    data.point = 1000;
+    return { data, result: "완료" };
   };
 
   //비밀번호 너무 길게쓰면 오류
@@ -110,6 +176,12 @@ function Join() {
       let correct = regex.test(id);
       if (correct) {
         setCorrectId(true);
+        const res = await kyApi
+          .post("/api/v1/cafecon/user/check/id", {
+            json: { userId: id },
+          })
+          .json();
+        if (res.code !== "C000") setDupId(false);
       } else {
         setCorrectId(false);
       }
@@ -164,7 +236,13 @@ function Join() {
     if (!id) {
       return alert("아이디를 입력해 주세요");
     }
-    if (!userName) {
+    if (!correctId) {
+      return alert("아이디 양식이 잘못되었습니다");
+    }
+    if (!dupId) {
+      return alert("사용중인 아이디 입니다");
+    }
+    if (!managerName) {
       return alert("이름을 입력해 주세요");
     }
     if (!phone) {
@@ -172,10 +250,11 @@ function Join() {
     }
     setPhoneCertChk(false);
     setPhoneCert("");
-    const res = await smsAuth(userName, phone);
+    const res = await smsAuth(managerName, phone);
     if (res.code === "C000") {
       setPhoneChk(true);
     } else {
+      console.log(res);
       return alert(
         "인증번호 발송 실패. 이름과 휴대폰 번호를 확인해 주세요\n같은 현상이 반복되면 고객센터 1644-4223 으로 문의해 주세요"
       );
@@ -183,7 +262,7 @@ function Join() {
   };
 
   const chkCert = async () => {
-    const res = await smsCert(userName, phone, phoneCert);
+    const res = await smsCert(managerName, phone, phoneCert);
     console.log(res);
     if (res.code === "C000") {
       setPhoneCertChk(true);
@@ -196,6 +275,9 @@ function Join() {
 
   return (
     <>
+      <Helmet>
+        <title>카페콘닷컴 회원가입</title>
+      </Helmet>
       <h2 className="text-center mt-[40px] mb-[20px] text-3xl font-extra">
         회원가입
       </h2>
@@ -204,7 +286,7 @@ function Join() {
           <div className="flex flex-col gap-y-4">
             <div
               data="이용약관"
-              className="flex flex-col gap-y-0 border shadow-lg"
+              className="flex flex-col gap-y-0 border-y lg:border-x lg:shadow-lg"
             >
               <div className="border rounded-t px-2 bg-white">
                 <div
@@ -235,9 +317,10 @@ function Join() {
                 <div id="terms" className="flex justify-between pr-10">
                   <label
                     htmlFor="agreeTerms"
-                    className="text-sm text-left pl-2 py-2 col-span-5 text-stone-700"
+                    className="text-xs text-left pl-2 py-2 col-span-5 text-stone-700"
                   >
-                    이용약관에 동의합니다 (필수)
+                    이용약관에 동의합니다{" "}
+                    <span className="text-red-500">(필수)</span>
                   </label>
                   <div className="flex justify-end gap-x-2">
                     <button
@@ -264,9 +347,10 @@ function Join() {
                 <div id="private" className="flex justify-between pr-10">
                   <label
                     htmlFor="agreePrivate"
-                    className="text-sm text-left pl-2 py-2 col-span-5 text-stone-700 whitespace-nowrap"
+                    className="text-xs text-left pl-2 py-2 col-span-5 text-stone-700 whitespace-nowrap"
                   >
-                    개인정보 수집 및 이용에 동의합니다 (필수)
+                    개인정보 수집 및 이용에 동의합니다{" "}
+                    <span className="text-red-500">(필수)</span>
                   </label>
 
                   <div className="flex justify-end gap-x-2">
@@ -294,7 +378,7 @@ function Join() {
                 <div id="marketing" className="flex justify-between pr-10">
                   <label
                     htmlFor="agreeMarketing"
-                    className="text-sm text-left pl-2 py-2 col-span-6 text-stone-700"
+                    className="text-xs text-left pl-2 py-2 col-span-6 text-stone-700"
                   >
                     마케팅 및 이벤트 정보수신에 동의합니다 (선택)
                   </label>
@@ -322,8 +406,10 @@ function Join() {
                 </div>
               </div>
             </div>
-            <div className="w-full border p-4 bg-white rounded shadow-lg flex flex-col gap-y-4">
-              <h3>기본정보 (필수)</h3>
+            <div className="w-full border-y lg:border-x p-4 bg-white lg:rounded lg:shadow-lg flex flex-col gap-y-4">
+              <h3 className="font-extra">
+                기본정보 <span className="text-red-500">(필수)</span>
+              </h3>
               <div
                 id="id"
                 className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border ${
@@ -471,7 +557,7 @@ function Join() {
                 </div>
               )}
               <div
-                id="userName"
+                id="managerName"
                 className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border`}
               >
                 <label
@@ -486,7 +572,7 @@ function Join() {
                     id="inputName"
                     autoCapitalize="none"
                     className={`border lg:border-0 p-2 w-full text-sm`}
-                    value={userName}
+                    value={managerName}
                     onChange={e => {
                       setUserName(e.currentTarget.value);
                     }}
@@ -615,6 +701,75 @@ function Join() {
                   </div>
                 </div>
               </div>
+
+              <div
+                id="birth"
+                className={`hidden grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border`}
+              >
+                <label
+                  htmlFor="inputBirth"
+                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+                >
+                  <div>생년월일</div>
+                </label>
+                <div className="lg:col-span-4">
+                  <input
+                    type="date"
+                    id="inputBirth"
+                    autoCapitalize="none"
+                    className={`border lg:border-0 p-2 w-full text-sm`}
+                    value={birth}
+                    onChange={e => {
+                      setBirth(e.currentTarget.value);
+                    }}
+                    onBlur={e => {
+                      setBirth(e.currentTarget.value);
+                    }}
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+              <div
+                id="gender"
+                className={`grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border hidden`}
+              >
+                <div className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100">
+                  <div>성별</div>
+                </div>
+                <div className="lg:col-span-4 flex justify-start gap-x-4 items-center">
+                  <div className="flex items-center gap-x-2 p-2">
+                    <input
+                      id="gender-female"
+                      type="radio"
+                      value="여자"
+                      name="gender"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                      checked={gender === "여자"}
+                      onChange={e => setGender(e.currentTarget.value)}
+                    />
+                    <label
+                      htmlFor="gender-female"
+                      className="text-sm break-keep"
+                    >
+                      여자
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-x-2 p-2">
+                    <input
+                      id="gender-male"
+                      type="radio"
+                      value="남자"
+                      name="gender"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                      checked={gender === "남자"}
+                      onChange={e => setGender(e.currentTarget.value)}
+                    />
+                    <label htmlFor="gender-male" className="text-sm break-keep">
+                      남자
+                    </label>
+                  </div>
+                </div>
+              </div>
               <div
                 id="email"
                 className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
@@ -660,9 +815,9 @@ function Join() {
                 </div>
               )}
             </div>
-            <div className="w-full border p-4 bg-white rounded shadow-lg flex flex-col gap-y-4">
-              <h3>
-                사업자 정보 (선택){" "}
+            <div className="w-full border-y lg:border-x p-4 bg-white lg:rounded lg:shadow-lg flex flex-col gap-y-4">
+              <h3 className="font-extra">
+                사업자 정보 <span className="text-gray-500">(선택)</span>{" "}
                 {/* <span className="text-xs">세금계산서 발행 등에 필요합니다</span> */}
               </h3>
               <div
@@ -716,6 +871,7 @@ function Join() {
                     onBlur={e => {
                       setCompany(e.currentTarget.value);
                     }}
+                    placeholder="사업자명을 입력해 주세요"
                     autoComplete="off"
                   />
                 </div>
@@ -728,7 +884,7 @@ function Join() {
                   htmlFor="inputCompanyEmail"
                   className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
                 >
-                  <div>계산서이메일</div>
+                  <div>사업자이메일</div>
                 </label>
                 <div className="lg:col-span-4">
                   <input
@@ -744,7 +900,7 @@ function Join() {
                       setTaxEmail(e.currentTarget.value);
                       chkEmail();
                     }}
-                    placeholder="계산서 발행 시 사용할 이메일을 입력해 주세요"
+                    placeholder="사업자용 이메일이 있다면 추가로 입력해주세요"
                     autoComplete="off"
                   />
                 </div>
@@ -758,15 +914,12 @@ function Join() {
               )}
 
               <div
-                id="companyEmail"
+                id="companyFile"
                 className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
               >
-                <label
-                  htmlFor="inputCompanyEmail"
-                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
-                >
-                  <div>파일첨부</div>
-                </label>
+                <div className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100">
+                  <div>사업자등록증</div>
+                </div>
                 <div className="lg:col-span-4">
                   <UploadFile file={companyFile} setFile={setCompanyFile} />
                 </div>
@@ -799,6 +952,8 @@ function Join() {
             <PopupPostCode
               onClose={closePostCode}
               setMainAddr={setMainAddr}
+              setSido={setSido}
+              setSigungu={setSigungu}
               modify={false}
             />
           </PopupDom>

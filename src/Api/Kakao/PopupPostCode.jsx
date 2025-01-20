@@ -20,16 +20,12 @@ const PopupPostCode = props => {
     if (props.modify) {
       props.editIt("/api/v1/user/myinfo/editaddr", "mainAddr", fullAddress);
       props.setMainAddr(fullAddress);
-      if (props.isEmploy === "true") {
-        props.setSido(data.sido);
-        props.setSigungu(data.sigungu);
-      }
+      props.setSido(data.sido);
+      props.setSigungu(data.sigungu);
     } else {
       props.setMainAddr(fullAddress);
-      if (props.isEmploy === "true") {
-        props.setSido(data.sido);
-        props.setSigungu(data.sigungu);
-      }
+      props.setSido(data.sido);
+      props.setSigungu(data.sigungu);
     }
     props.onClose();
   };
