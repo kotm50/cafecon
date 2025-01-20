@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import queryString from "query-string";
@@ -239,5 +240,9 @@ function Pagenation(props) {
     </>
   );
 }
+
+Pagenation.propTypes = {
+  last: PropTypes.number.isRequired,
+};
 
 export default Pagenation;

@@ -4,11 +4,13 @@ import PopupPostCode from "../../Api/Kakao/PopupPostCode";
 import { useState } from "react";
 import UploadFile from "../../Components/UploadFile";
 import { useNavigate } from "react-router-dom";
+import { smsAuth, smsCert } from "../../Api/Auth";
 //import { kyApi } from "../../Api/Api";
 
 function Join() {
   const navi = useNavigate();
   const [id, setId] = useState("");
+  const [userName, setUserName] = useState("");
   const [pwd, setPwd] = useState("");
   const [pwdChk, setPwdChk] = useState("");
   const [correctId, setCorrectId] = useState(true);
@@ -19,7 +21,9 @@ function Join() {
   const [pwdMsg, setPwdMsg] = useState("");
   const [mainAddr, setMainAddr] = useState("주소찾기를 눌러주세요");
   const [phone, setPhone] = useState("");
+  const [phoneChk, setPhoneChk] = useState(false);
   const [phoneCert, setPhoneCert] = useState("");
+  const [phoneCertChk, setPhoneCertChk] = useState(false);
   const [email, setEmail] = useState("");
   const [dupEmail, setDupEmail] = useState(true);
   const [correctEmail, setCorrectEmail] = useState(true);
@@ -156,24 +160,46 @@ function Join() {
     }
   };
 
-  const getCert = () => {
-    console.log("인증번호 발송");
+  const getCert = async () => {
+    if (!id) {
+      return alert("아이디를 입력해 주세요");
+    }
+    if (!userName) {
+      return alert("이름을 입력해 주세요");
+    }
+    if (!phone) {
+      return alert("휴대폰 번호를 입력해 주세요");
+    }
+    setPhoneCertChk(false);
+    setPhoneCert("");
+    const res = await smsAuth(userName, phone);
+    if (res.code === "C000") {
+      setPhoneChk(true);
+    } else {
+      return alert(
+        "인증번호 발송 실패. 이름과 휴대폰 번호를 확인해 주세요\n같은 현상이 반복되면 고객센터 1644-4223 으로 문의해 주세요"
+      );
+    }
   };
 
-  const chkCert = () => {
-    console.log("인증번호 확인");
+  const chkCert = async () => {
+    const res = await smsCert(userName, phone, phoneCert);
+    console.log(res);
+    if (res.code === "C000") {
+      setPhoneCertChk(true);
+    } else {
+      return alert(
+        "인증번호 확인 실패. 인증번호를 확인해 주세요\n같은 현상이 반복되면 고객센터 1644-4223 으로 문의해 주세요"
+      );
+    }
   };
 
   return (
     <>
-      <h2 className="text-center mt-[100px] mb-[20px] text-3xl font-extra">
+      <h2 className="text-center mt-[40px] mb-[20px] text-3xl font-extra">
         회원가입
       </h2>
       <div className="w-full max-w-[600px] mx-auto">
-        <div className="text-xs text-right px-1">
-          <span className="text-red-500">*</span>는 필수 입력 항목입니다
-        </div>
-
         <form onSubmit={e => join(e)}>
           <div className="flex flex-col gap-y-4">
             <div
@@ -212,7 +238,6 @@ function Join() {
                     className="text-sm text-left pl-2 py-2 col-span-5 text-stone-700"
                   >
                     이용약관에 동의합니다 (필수)
-                    <span className="text-red-500">*</span>
                   </label>
                   <div className="flex justify-end gap-x-2">
                     <button
@@ -242,7 +267,6 @@ function Join() {
                     className="text-sm text-left pl-2 py-2 col-span-5 text-stone-700 whitespace-nowrap"
                   >
                     개인정보 수집 및 이용에 동의합니다 (필수)
-                    <span className="text-red-500">*</span>
                   </label>
 
                   <div className="flex justify-end gap-x-2">
@@ -299,7 +323,7 @@ function Join() {
               </div>
             </div>
             <div className="w-full border p-4 bg-white rounded shadow-lg flex flex-col gap-y-4">
-              <h3>기본정보</h3>
+              <h3>기본정보 (필수)</h3>
               <div
                 id="id"
                 className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border ${
@@ -312,9 +336,7 @@ function Join() {
                     correctId || !dupId ? "lg:bg-gray-100" : "lg:bg-red-100"
                   } `}
                 >
-                  <div>
-                    아이디<span className="text-red-500">*</span>
-                  </div>
+                  <div>아이디</div>
                 </label>
                 <div className="lg:col-span-4">
                   <input
@@ -362,9 +384,7 @@ function Join() {
                     correctPwd ? "lg:bg-gray-100" : "lg:bg-red-100"
                   } `}
                 >
-                  <div>
-                    비밀번호<span className="text-red-500">*</span>
-                  </div>
+                  <div>비밀번호</div>
                 </label>
                 <div className="lg:col-span-4">
                   <input
@@ -451,42 +471,31 @@ function Join() {
                 </div>
               )}
               <div
-                id="mainAddr"
-                className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
+                id="userName"
+                className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border`}
               >
                 <label
-                  htmlFor="inputMainAddr"
+                  htmlFor="inputName"
                   className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
                 >
-                  <div>주소</div>
+                  <div>이름</div>
                 </label>
-                <div className="lg:col-span-4 grid grid-cols-3 gap-1">
-                  <div className="col-span-2" title={mainAddr}>
-                    <input
-                      type="text"
-                      id="inputMainAddr"
-                      className={`border lg:border-0 p-2 w-full text-sm ${
-                        mainAddr === "주소찾기를 눌러주세요"
-                          ? "text-stone-500"
-                          : undefined
-                      }`}
-                      value={mainAddr}
-                      onChange={e => setMainAddr(e.currentTarget.value)}
-                      onBlur={e => setMainAddr(e.currentTarget.value)}
-                      disabled
-                    />
-                  </div>
-                  <div>
-                    <button
-                      className="w-full h-full p-2 text-white bg-amber-600 hover:bg-opacity-80 text-sm"
-                      onClick={e => {
-                        e.preventDefault();
-                        openPostCode();
-                      }}
-                    >
-                      주소찾기
-                    </button>
-                  </div>
+                <div className="lg:col-span-4">
+                  <input
+                    type="text"
+                    id="inputName"
+                    autoCapitalize="none"
+                    className={`border lg:border-0 p-2 w-full text-sm`}
+                    value={userName}
+                    onChange={e => {
+                      setUserName(e.currentTarget.value);
+                    }}
+                    onBlur={e => {
+                      setUserName(e.currentTarget.value);
+                    }}
+                    placeholder="이름을 입력하세요"
+                    autoComplete="off"
+                  />
                 </div>
               </div>
               <div
@@ -524,37 +533,84 @@ function Join() {
                   </div>
                 </div>
               </div>
+              {phoneChk && (
+                <div
+                  id="PhoneCert"
+                  className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
+                >
+                  <label
+                    htmlFor="inputPhoneCert"
+                    className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+                  >
+                    <div>인증번호</div>
+                  </label>
+                  <div className="lg:col-span-4 grid grid-cols-3 gap-1">
+                    <div className="col-span-2" title={mainAddr}>
+                      <input
+                        type="text"
+                        id="inputPhoneCert"
+                        className={`border lg:border-0 p-2 w-full text-sm`}
+                        value={phoneCert}
+                        placeholder="인증번호를 입력해 주세요"
+                        onChange={e => setPhoneCert(e.currentTarget.value)}
+                        onBlur={e => setPhoneCert(e.currentTarget.value)}
+                      />
+                    </div>
+                    <div>
+                      <button
+                        className={`w-full h-full p-2 text-white ${
+                          !phoneCertChk
+                            ? "bg-sky-500 hover:bg-opacity-80"
+                            : "bg-gray-500"
+                        } text-sm`}
+                        onClick={e => {
+                          e.preventDefault();
+                          chkCert();
+                        }}
+                        disabled={phoneCertChk}
+                      >
+                        {phoneCertChk ? "인증완료" : "인증번호 확인"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div
-                id="PhoneCert"
+                id="mainAddr"
                 className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
               >
                 <label
-                  htmlFor="inputPhoneCert"
+                  htmlFor="inputMainAddr"
                   className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
                 >
-                  <div>인증번호</div>
+                  <div>주소</div>
                 </label>
                 <div className="lg:col-span-4 grid grid-cols-3 gap-1">
                   <div className="col-span-2" title={mainAddr}>
                     <input
                       type="text"
-                      id="inputPhoneCert"
-                      className={`border lg:border-0 p-2 w-full text-sm`}
-                      value={phoneCert}
-                      placeholder="인증번호를 입력해 주세요"
-                      onChange={e => setPhoneCert(e.currentTarget.value)}
-                      onBlur={e => setPhoneCert(e.currentTarget.value)}
+                      id="inputMainAddr"
+                      className={`border lg:border-0 p-2 w-full text-sm ${
+                        mainAddr === "주소찾기를 눌러주세요"
+                          ? "text-stone-500"
+                          : undefined
+                      }`}
+                      value={mainAddr}
+                      onChange={e => setMainAddr(e.currentTarget.value)}
+                      onBlur={e => setMainAddr(e.currentTarget.value)}
+                      disabled
                     />
                   </div>
                   <div>
                     <button
-                      className="w-full h-full p-2 text-white bg-sky-500 hover:bg-opacity-80 text-sm"
+                      className="w-full h-full p-2 text-white bg-amber-600 hover:bg-opacity-80 text-sm"
                       onClick={e => {
                         e.preventDefault();
-                        chkCert();
+                        openPostCode();
                       }}
                     >
-                      휴대폰 인증하기
+                      주소찾기
                     </button>
                   </div>
                 </div>
@@ -606,10 +662,8 @@ function Join() {
             </div>
             <div className="w-full border p-4 bg-white rounded shadow-lg flex flex-col gap-y-4">
               <h3>
-                사업자 정보{" "}
-                <span className="text-xs">
-                  (세금계산서 발행 등에 필요합니다)
-                </span>
+                사업자 정보 (선택){" "}
+                {/* <span className="text-xs">세금계산서 발행 등에 필요합니다</span> */}
               </h3>
               <div
                 id="companyNum"

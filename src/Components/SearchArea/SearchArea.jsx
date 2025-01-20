@@ -1,12 +1,22 @@
-import { useState } from "react";
+import queryString from "query-string";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function SearchArea() {
-  const [searchKeyword, setSearchKeyword] = useState("");
+  const navi = useNavigate();
+  const thisLocation = useLocation();
+  const parsed = queryString.parse(thisLocation.search);
+  const keyword = parsed.keyword || "";
+  const [searchKeyword, setSearchKeyword] = useState(keyword);
 
   const searchIt = async e => {
     e.preventDefault();
-    console.log("검색");
+    navi(`/goods/list?keyword=${searchKeyword}`);
   };
+
+  useEffect(() => {
+    setSearchKeyword(keyword || "");
+  }, [keyword]);
 
   return (
     <>

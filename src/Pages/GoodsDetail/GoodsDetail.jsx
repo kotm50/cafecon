@@ -141,15 +141,23 @@ function GoodsDetail() {
                   </span>
                 </div>
                 <div className="mt-5 flex flex-col lg:flex-row justify-start gap-3 relative">
-                  <div className="grid grid-cols-3 gap-2 lg:w-2/3">
+                  <div className="flex justify-start gap-x-2 ">
                     <button
-                      className="col-span-2 block text-center w-full transition-all duration-150 ease-in-out bg-indigo-500 text-white py-2 px-5 rounded hover:bg-indigo-700"
+                      className="w-fit transition-all duration-150 ease-in-out bg-indigo-500 text-white py-2 px-5 rounded hover:bg-indigo-700"
+                      onClick={() => {
+                        console.log("구매하기");
+                      }}
+                    >
+                      포인트로 구입하기
+                    </button>
+                    <button
+                      className="w-fit transition-all duration-150 ease-in-out bg-orange-600 text-white py-2 px-5 rounded hover:bg-orange-700"
                       onClick={() => {
                         setModalOn(true);
                         setModalType("buy");
                       }}
                     >
-                      포인트로 구입하기
+                      포인트로 선물하기
                     </button>
                   </div>
                 </div>

@@ -1,14 +1,18 @@
 import PropTypes from "prop-types";
 import warning from "../../assets/warning.svg";
+import Gifticon from "../Gifticon";
 
 function Modal(props) {
   return (
     <>
       {props.modalOn ? (
         <>
-          <div className="fixed top-1/2 left-1/2 min-w-[200px] min-h-[100px] -translate-x-1/2 -translate-y-1/2 p-2 z-[2000] bg-white rounded-lg">
+          <div className="fixed top-1/2 left-1/2 min-w-[600px] min-h-[100px] -translate-x-1/2 -translate-y-1/2 p-2 z-[2000] bg-white rounded-lg">
             {props.modalType === "buy" ? (
-              "buy"
+              <Gifticon
+                setModalOn={props.setModalOn}
+                setModalType={props.setModalType}
+              />
             ) : props.modalType === "join" ? (
               <>
                 <img src={warning} alt="" className="w-[200px] h-auto" />

@@ -7,22 +7,24 @@ import { Helmet } from "react-helmet";
 import { kyApi, getPrice } from "../../Api/Api";
 import Pagenation from "../../Components/Pagenation";
 
-import sorry from "../../assets/sorry.png";
 import ImgLoad from "../../Components/ImgLoad";
 import MainCategory from "../../Components/MainCategory";
+import Sorry from "../../Components/Sorry";
 
 function GoodsList() {
   const [goods, setGoods] = useState([]);
   const thisLocation = useLocation();
   const { category, brand } = useParams();
-  const parsed = queryString.parse(location.search);
+  const parsed = queryString.parse(thisLocation.search);
   const page = parsed.page || 1;
   const size = parsed.size || 20;
+  const keyword = parsed.keyword || "";
   const [loadMsg, setLoadMsg] = useState("상품을 불러오고 있습니다");
   const [loading, setLoading] = useState(false);
   const [last, setLast] = useState(1);
 
   const [catName, setCatName] = useState("");
+  const [resultNum, setResultNum] = useState("");
   const [errMsg, setErrMsg] = useState("조회 된 내용이 없습니다");
 
   useEffect(() => {
@@ -30,7 +32,8 @@ function GoodsList() {
     // location이 바뀔 때마다 스크롤을 맨 위로 이동
     window.scrollTo(0, 0);
     setLoadMsg("상품을 불러오고 있습니다");
-    getGoods(category, brand, page, size);
+    getGoods(category, brand, page, size, keyword);
+
     setCatName(
       Number(category) === 1
         ? "커피/음료"
@@ -64,7 +67,7 @@ function GoodsList() {
   };
   */
 
-  const getGoods = async (c, b, p, s) => {
+  const getGoods = async (c, b, p, s, k) => {
     setLoading(true);
     let listUrl = "/biz/v1/shop/goods/list";
     if (c !== undefined && b === undefined) {
@@ -78,6 +81,9 @@ function GoodsList() {
     if (c === "etc") {
       listUrl = "/biz/v1/shop/goods/etc/list";
     }
+    if (k !== "") {
+      listUrl = `/biz/v1/shop/goods/search/${k}`;
+    }
     const data = {
       page: p,
       size: s,
@@ -86,6 +92,7 @@ function GoodsList() {
       const res = await kyApi.get(listUrl, { searchParams: data }).json();
       console.log(res);
       setGoods(res.goodsList);
+      setResultNum(res.listNum);
       setLast(res.totalPages);
     } catch (error) {
       console.log(error);
@@ -94,59 +101,79 @@ function GoodsList() {
     setLoading(false);
   };
 
+  function checkName(name) {
+    //name의 마지막 음절의 유니코드(UTF-16)
+    const charCode = name.charCodeAt(name.length - 1);
+
+    //유니코드의 한글 범위 내에서 해당 코드의 받침 확인
+    const consonantCode = (charCode - 44032) % 28;
+
+    if (consonantCode === 0) {
+      //0이면 받침 없음 -> 를
+      return `로`;
+    }
+    //1이상이면 받침 있음 -> 을
+    return `으로`;
+  }
+
   return (
     <>
       <Helmet>
-        <title>{catName ? `${catName} | ` : ""}카페콘닷컴</title>
+        <title>
+          {keyword ? `${keyword} 검색결과 | ` : catName ? `${catName} | ` : ""}
+          카페콘닷컴
+        </title>
       </Helmet>
       <div className="w-full max-w-[1240px] mx-auto bg-white p-4">
         <MainCategory />
         {goods && goods.length > 0 ? (
-          <div className="w-full grid grid-cols-2 lg:grid-cols-5 gap-4">
-            {goods.map((good, idx) => (
-              <Link
-                key={idx}
-                to={`/goods/detail/${good.goodsCode}`}
-                className="pb-0 min-h-0 h-fit"
-              >
-                <div className="group p-2 rounded">
-                  <div className="w-32 h-32 lg:w-48 lg:h-48 mx-auto rounded overflow-hidden max-w-full bg-white drop-shadow hover:drop-shadow-xl">
-                    <ImgLoad good={good} />
-                  </div>
-                  <div className="w-32 lg:w-48 mx-auto grid grid-cols-1 pt-1 border-gray-100 max-w-full mt-3">
-                    <p className="lg:text-base group-hover:font-neobold keep-all overflow-hidden text-ellipsis whitespace-nowrap text-left font-neobold text-blue-500">
-                      {good.brandName}
-                    </p>
-                    <p
-                      className="lg:text-lg group-hover:font-neobold keep-all overflow-hidden text-ellipsis whitespace-nowrap text-left"
-                      title={good.goodsName}
-                    >
-                      {good.goodsName}
-                    </p>
-                    <p className="lg:text-lg text-left mt-3">
-                      <span className="text-xl text-rose-500">
-                        {getPrice(Number(good.discountPrice)).toLocaleString()}
-                      </span>{" "}
-                      P
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
           <>
-            {!loading && (
-              <div className="text-2xl text-bold text-center">
-                <img
-                  src={sorry}
-                  className="mx-auto w-[240px] h-auto mb-5 mt-20"
-                  alt="오류"
-                />
-                {errMsg}
-              </div>
+            {keyword && (
+              <h3 className="text-lg lg:text-2xl p-2 bg-orange-50 rounded-lg mt-2 text-center lg:text-left">
+                <span className="font-neobold text-sky-500">{keyword}</span>
+                {checkName(keyword)} 검색하여 <br className="block lg:hidden" />
+                총{" "}
+                <span className="font-neobold text-red-500">{resultNum}</span>
+                개의 상품을 발견했습니다
+              </h3>
             )}
+            <div className="w-full grid grid-cols-2 lg:grid-cols-5 gap-4">
+              {goods.map((good, idx) => (
+                <Link
+                  key={idx}
+                  to={`/goods/detail/${good.goodsCode}`}
+                  className="pb-0 min-h-0 h-fit"
+                >
+                  <div className="group p-2 rounded">
+                    <div className="w-32 h-32 lg:w-48 lg:h-48 mx-auto rounded overflow-hidden max-w-full bg-white drop-shadow hover:drop-shadow-xl">
+                      <ImgLoad good={good} />
+                    </div>
+                    <div className="w-32 lg:w-48 mx-auto grid grid-cols-1 pt-1 border-gray-100 max-w-full mt-3">
+                      <p className="lg:text-base group-hover:font-neobold keep-all overflow-hidden text-ellipsis whitespace-nowrap text-left font-neobold text-blue-500">
+                        {good.brandName}
+                      </p>
+                      <p
+                        className="lg:text-lg group-hover:font-neobold keep-all overflow-hidden text-ellipsis whitespace-nowrap text-left"
+                        title={good.goodsName}
+                      >
+                        {good.goodsName}
+                      </p>
+                      <p className="lg:text-lg text-left mt-3">
+                        <span className="text-xl text-rose-500">
+                          {getPrice(
+                            Number(good.discountPrice)
+                          ).toLocaleString()}
+                        </span>{" "}
+                        P
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </>
+        ) : (
+          <Sorry message={errMsg} />
         )}
         {goods && goods.length > 0 ? <Pagenation last={last} /> : null}
       </div>
