@@ -11,7 +11,7 @@ import { Helmet } from "react-helmet";
 function Join() {
   const navi = useNavigate();
   const [id, setId] = useState("");
-  const [managerName, setUserName] = useState("");
+  const [managerName, setManagerName] = useState("");
   const [pwd, setPwd] = useState("");
   const [pwdChk, setPwdChk] = useState("");
   const [correctId, setCorrectId] = useState(true);
@@ -27,9 +27,6 @@ function Join() {
   const [phoneChk, setPhoneChk] = useState(false);
   const [phoneCert, setPhoneCert] = useState("");
   const [phoneCertChk, setPhoneCertChk] = useState(false);
-  const [email, setEmail] = useState("");
-  const [dupEmail, setDupEmail] = useState(true);
-  const [correctEmail, setCorrectEmail] = useState(true);
   const [correctEmail2, setCorrectEmail2] = useState(true);
 
   const [agreeAll, setAgreeAll] = useState(false);
@@ -37,9 +34,9 @@ function Join() {
   const [priAgree, setPriAgree] = useState(false);
   const [marketingAgree, setMarketingAgree] = useState(false);
 
-  const [company, setCompany] = useState("");
-  const [companyNum, setCompanyNum] = useState("");
-  const [taxEmail, setTaxEmail] = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [businessNo, setBusinessNo] = useState("");
+  const [businessEmail, setBusinessEmail] = useState("");
   const [companyFile, setCompanyFile] = useState("");
 
   const [modalOn, setModalOn] = useState(false);
@@ -99,7 +96,7 @@ function Join() {
     if (!correctPwdChk) return { data, result: "비밀번호가 일치하지 않습니다" };
     if (!phone) return { data, result: "휴대폰 번호를 입력해 주세요" };
     if (!phoneCertChk) return { data, result: "휴대폰 인증을 완료해 주세요" };
-    //if (!email) return { data, result: "이메일을 입력해 주세요" };
+
     //if (!gender) return { data, result: "성별을 선택해 주세요" };
     if (!birth) return { data, result: "생년월일을 입력해 주세요" };
     if (!mainAddr) return { data, result: "주소를 입력해 주세요" };
@@ -107,7 +104,7 @@ function Join() {
     data.managerName = managerName;
     data.userPwd = pwd;
     data.phone = phone;
-    data.email = email;
+
     data.address = mainAddr;
     data.sido = sido;
     data.sigungu = sigungu;
@@ -116,11 +113,10 @@ function Join() {
     data.agreeTerms = "Y";
     data.agreePrivacy = "Y";
     data.agreeMarketing = marketingAgree ? "Y" : "N";
-    if (company) data.companyName = company;
-    if (company) data.businessName = company;
-    if (companyNum) data.businessNo = companyNum;
-    if (taxEmail) data.businessEmail = taxEmail;
-    if (company && !taxEmail) data.businessEmail = email;
+
+    if (businessName) data.businessName = businessName;
+    if (businessNo) data.businessNo = businessNo;
+    if (businessEmail) data.businessEmail = businessEmail;
     if (companyFile)
       data.businessLicense = await uploadFile(companyFile, "company");
     data.point = 1000;
@@ -191,18 +187,10 @@ function Join() {
   };
   //이메일 및 중복검사
   const chkEmail = async () => {
-    setCorrectEmail(true);
     setCorrectEmail2(true);
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (email) {
-      if (emailPattern.test(email)) {
-        setCorrectEmail(true);
-      } else {
-        setCorrectEmail(false);
-      }
-    }
-    if (taxEmail) {
-      if (emailPattern.test(taxEmail)) {
+    if (businessEmail) {
+      if (emailPattern.test(businessEmail)) {
         setCorrectEmail2(true);
       } else {
         setCorrectEmail2(false);
@@ -263,7 +251,6 @@ function Join() {
 
   const chkCert = async () => {
     const res = await smsCert(managerName, phone, phoneCert);
-    console.log(res);
     if (res.code === "C000") {
       setPhoneCertChk(true);
     } else {
@@ -574,10 +561,10 @@ function Join() {
                     className={`border lg:border-0 p-2 w-full text-sm`}
                     value={managerName}
                     onChange={e => {
-                      setUserName(e.currentTarget.value);
+                      setManagerName(e.currentTarget.value);
                     }}
                     onBlur={e => {
-                      setUserName(e.currentTarget.value);
+                      setManagerName(e.currentTarget.value);
                     }}
                     placeholder="이름을 입력하세요"
                     autoComplete="off"
@@ -664,11 +651,11 @@ function Join() {
 
               <div
                 id="mainAddr"
-                className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
+                className="hidden grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
               >
                 <label
                   htmlFor="inputMainAddr"
-                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+                  className="text-sm text-left lg:text-right flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100 flex"
                 >
                   <div>주소</div>
                 </label>
@@ -770,50 +757,6 @@ function Join() {
                   </div>
                 </div>
               </div>
-              <div
-                id="email"
-                className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
-              >
-                <label
-                  htmlFor="inputEmail"
-                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
-                >
-                  이메일
-                </label>
-                <div className="lg:col-span-4">
-                  <input
-                    type="text"
-                    id="inputEmail"
-                    className="border lg:border-0 p-2 w-full text-sm"
-                    value={email}
-                    onChange={e => {
-                      setEmail(e.currentTarget.value);
-                      setCorrectEmail(true);
-                      setDupEmail(true);
-                    }}
-                    onBlur={e => {
-                      setEmail(e.currentTarget.value);
-                      chkEmail();
-                    }}
-                    placeholder="이메일 주소를 입력하세요"
-                  />
-                </div>
-              </div>
-
-              {!correctEmail && (
-                <div className="text-sm text-rose-500">
-                  이메일 양식이 잘못되었습니다.{" "}
-                  <br className="block lg:hidden" />
-                  확인 후 다시 입력해 주세요
-                </div>
-              )}
-
-              {!dupEmail && (
-                <div className="text-sm text-rose-500">
-                  사용중인 이메일 입니다. <br className="block lg:hidden" />
-                  확인 후 다시 입력해 주세요
-                </div>
-              )}
             </div>
             <div className="w-full border-y lg:border-x p-4 bg-white lg:rounded lg:shadow-lg flex flex-col gap-y-4">
               <h3 className="font-extra">
@@ -821,11 +764,11 @@ function Join() {
                 {/* <span className="text-xs">세금계산서 발행 등에 필요합니다</span> */}
               </h3>
               <div
-                id="companyNum"
+                id="businessNo"
                 className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
               >
                 <label
-                  htmlFor="inputCompanyNum"
+                  htmlFor="inputBusinessNo"
                   className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
                 >
                   <div>사업자번호</div>
@@ -833,15 +776,15 @@ function Join() {
                 <div className="lg:col-span-4">
                   <input
                     type="text"
-                    id="inputCompanyNum"
+                    id="inputBusinessNo"
                     autoCapitalize="none"
                     className={`border lg:border-0 p-2 w-full text-sm`}
-                    value={companyNum}
+                    value={businessNo}
                     onChange={e => {
-                      setCompanyNum(e.currentTarget.value);
+                      setBusinessNo(e.currentTarget.value);
                     }}
                     onBlur={e => {
-                      setCompanyNum(e.currentTarget.value);
+                      setBusinessNo(e.currentTarget.value);
                     }}
                     placeholder="'-' 없이 10자리 숫자만 입력해 주세요"
                     autoComplete="off"
@@ -864,12 +807,12 @@ function Join() {
                     id="inputCompany"
                     autoCapitalize="none"
                     className={`border lg:border-0 p-2 w-full text-sm`}
-                    value={company}
+                    value={businessName}
                     onChange={e => {
-                      setCompany(e.currentTarget.value);
+                      setBusinessName(e.currentTarget.value);
                     }}
                     onBlur={e => {
-                      setCompany(e.currentTarget.value);
+                      setBusinessName(e.currentTarget.value);
                     }}
                     placeholder="사업자명을 입력해 주세요"
                     autoComplete="off"
@@ -892,15 +835,15 @@ function Join() {
                     id="inputCompanyEmail"
                     autoCapitalize="none"
                     className={`border lg:border-0 p-2 w-full text-sm`}
-                    value={taxEmail}
+                    value={businessEmail}
                     onChange={e => {
-                      setTaxEmail(e.currentTarget.value);
+                      setBusinessEmail(e.currentTarget.value);
                     }}
                     onBlur={e => {
-                      setTaxEmail(e.currentTarget.value);
+                      setBusinessEmail(e.currentTarget.value);
                       chkEmail();
                     }}
-                    placeholder="사업자용 이메일이 있다면 추가로 입력해주세요"
+                    placeholder="이메일을 입력해주세요"
                     autoComplete="off"
                   />
                 </div>

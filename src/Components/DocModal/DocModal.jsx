@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
-import Privacy from "../Privacy";
-import Terms from "../Terms";
-import RefusalEmail from "../RefusalEmail";
-import Privacy2 from "../Privacy2";
-import Marketing from "../Marketing";
-import JobRec from "../JobRec";
+import Privacy from "../../Doc/Privacy";
+import Terms from "../../Doc/Terms";
+import RefusalEmail from "../../Doc/RefusalEmail";
+import Privacy2 from "../../Doc/Privacy2";
+import Marketing from "../../Doc/Marketing";
+import JobRec from "../../Doc/JobRec";
 
 function DocModal(props) {
   let domain = window.location.hostname;

@@ -9,6 +9,7 @@ import ToTop from "./Components/ToTop";
 import Join from "./Pages/Join";
 import Login from "./Pages/Login";
 import UserMain from "./Pages/UserMain";
+import Mypage from "./Pages/Mypage";
 function App() {
   return (
     <>
@@ -22,6 +23,7 @@ function App() {
         <Route path="/user" element={<UserMain />}>
           <Route path="login" element={<Login />} />
           <Route path="join" element={<Join />} />
+          <Route path="mypage" element={<Mypage />} />
         </Route>
       </Routes>
       <ToTop />

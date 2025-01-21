@@ -145,7 +145,7 @@ function GoodsList() {
                   className="pb-0 min-h-0 h-fit"
                 >
                   <div className="group p-2 rounded">
-                    <div className="w-32 h-32 lg:w-48 lg:h-48 mx-auto rounded overflow-hidden max-w-full bg-white drop-shadow hover:drop-shadow-xl">
+                    <div className="w-32 h-32 lg:w-48 lg:h-48 mx-auto rounded overflow-hidden max-w-full bg-white drop-shadow hover:drop-shadow-xl border">
                       <ImgLoad good={good} />
                     </div>
                     <div className="w-32 lg:w-48 mx-auto grid grid-cols-1 pt-1 border-gray-100 max-w-full mt-3">

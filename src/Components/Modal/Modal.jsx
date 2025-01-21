@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
 import warning from "../../assets/warning.svg";
 import Gifticon from "../Gifticon";
+import ReLogin from "../ReLogin";
+import EditPwd from "../EditPwd/EditPwd";
 
 function Modal(props) {
   return (
@@ -21,6 +23,21 @@ function Modal(props) {
                 <img src={warning} alt="" className="w-[200px] h-auto" />
                 <p className="text-center text-xl font-bold">준비중 입니다</p>
               </>
+            ) : props.modalType === "limit" ? (
+              <ReLogin
+                setModalOn={props.setModalOn}
+                setModalType={props.setModalType}
+                limit={props.limit}
+                setLimit={props.setLimit}
+                extendLogin={props.extendLogin}
+                getLimitandPoint={props.getLimitandPoint}
+              />
+            ) : props.modalType === "password" ? (
+              <EditPwd
+                setModalOn={props.setModalOn}
+                setModalType={props.setModalType}
+                user={props.login}
+              />
             ) : null}
           </div>
           <div
@@ -44,6 +61,10 @@ Modal.propTypes = {
   buyIt: PropTypes.func,
   login: PropTypes.object,
   goodsPrice: PropTypes.number,
+  limit: PropTypes.number,
+  setLimit: PropTypes.func,
+  extendLogin: PropTypes.func,
+  getLimitandPoint: PropTypes.func,
 };
 
 export default Modal;
