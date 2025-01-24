@@ -104,7 +104,7 @@ function GoodsDetail() {
       const point = await kyApi
         .get("/api/v1/cafecon/common/exper_cookie")
         .json();
-
+      alert("구매 완료");
       dispatch(loginUser({ point: point.point }));
     }
   };
