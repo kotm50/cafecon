@@ -54,7 +54,7 @@ function Specification(props) {
                   <br />자
                 </th>
                 <th>사업자등록번호</th>
-                <td>123-12-12345</td>
+                <td>123-12-12445</td>
               </tr>
               <tr>
                 <th>상호명</th>
