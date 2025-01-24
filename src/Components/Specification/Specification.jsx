@@ -3,7 +3,7 @@ import "./Specification.css";
 import { useRef } from "react";
 import domtoimage from "dom-to-image";
 import { jsPDF } from "jspdf";
-import seal from "../../Assets/seal.png";
+import seal from "../../assets/seal.png";
 
 function Specification(props) {
   const captureRef = useRef(null);
