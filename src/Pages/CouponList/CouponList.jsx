@@ -25,7 +25,6 @@ function CouponList() {
       const res = await kyApi
         .post("/api/v1/cafecon/user/find/couponList", { json: data })
         .json();
-      console.log(res);
       setCouponList(res.couponList);
     } catch (error) {
       console.log(error);
@@ -49,7 +48,7 @@ function CouponList() {
     const res = await kyApi
       .post("/api/v1/cafecon/common/cancel/bizapi", { json: data })
       .json();
-    console.log(res);
+    alert(res.message || "");
   };
   return (
     <div className="w-full bg-white p-5">

@@ -72,7 +72,6 @@ function Join() {
         json: data,
       })
       .json();
-    console.log(res);
     if (res.code !== "C000") {
       if (data.businessLicense)
         await deleteFile(data.businessLicense, "company");
@@ -245,7 +244,6 @@ function Join() {
     if (res.code === "C000") {
       setPhoneChk(true);
     } else {
-      console.log(res);
       return alert(
         "인증번호 발송 실패. 이름과 휴대폰 번호를 확인해 주세요\n같은 현상이 반복되면 고객센터 1644-4223 으로 문의해 주세요"
       );

@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 function ImgModal(props) {
   return (
     <>
@@ -23,5 +25,10 @@ function ImgModal(props) {
     </>
   );
 }
+
+ImgModal.propTypes = {
+  setIsModal: PropTypes.func.isRequired,
+  img: PropTypes.string.isRequired,
+};
 
 export default ImgModal;

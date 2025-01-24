@@ -134,7 +134,7 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
       if (num.idx === 5)
         setPhone5({ num: num.num, stat: "전송중", memo: num.memo });
       const res = await buyIt(sendNum, num.num, num.memo);
-      console.log(res);
+
       if (res === "완료") {
         if (num.idx === 1)
           setPhone1({ num: num.num, stat: "완료", memo: num.memo });

@@ -12,12 +12,10 @@ function PwdChk(props) {
       userId: props.userId,
       userPwd: props.userPwd,
     };
-    console.log(data);
     const res = await kyApi
       .post("/api/v1/cafecon/user/check/pwd", { json: data })
       .json();
 
-    console.log(res);
     if (res.code === "C000") {
       props.setChecked(true);
     } else {

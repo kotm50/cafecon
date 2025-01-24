@@ -77,10 +77,7 @@ function PointList() {
       if (stype) data.searchType = stype;
       if (keyword) data.searchKeyword = keyword;
     }
-    console.log(url);
-    console.log(data);
     const res = await kyApi.post(url, { json: data }).json();
-    console.log(res);
     if (status === "deposit") {
       setPointList(res.depositList);
     } else {

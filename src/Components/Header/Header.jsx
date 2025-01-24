@@ -69,7 +69,6 @@ function Header() {
   };
 
   const getHeadType = p => {
-    console.log(p.split("/")[2] === "join" || p.split("/")[2] === "login");
     if (p.split("/")[2] === "join" || p.split("/")[2] === "login") {
       setHeadType("");
     } else {

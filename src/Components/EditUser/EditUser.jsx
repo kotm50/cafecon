@@ -67,7 +67,6 @@ function EditUser(props) {
     const res = await kyApi
       .post("/api/v1/cafecon/user/find/one", { json: data })
       .json();
-    console.log(res);
     setBeforeData(res.user);
     setId(res.user.userId || "");
     setManagerName(res.user.managerName || "");
@@ -85,17 +84,14 @@ function EditUser(props) {
   const modify = async e => {
     e.preventDefault();
     const data = await chkData();
-    console.log(data);
     if (Object.keys(data).length === 0) {
       return alert("수정된 내용이 없습니다. 확인 후 다시 시도해 주세요");
     }
     data.userId = props.login.userId;
     data.userPwd = props.userPwd;
-    console.log(data);
     const res = await kyApi
       .put("/api/v1/cafecon/user/edit", { json: data })
       .json();
-    console.log(res);
     if (res.code === "C000") {
       if (beforeData.businessLicense !== data.businessLicense) {
         await deleteFile(beforeData.businessLicense);
@@ -123,7 +119,6 @@ function EditUser(props) {
     if (marketing !== beforeData.agreeMarketing)
       data.agreeMarketing = marketing;
 
-    console.log(data);
     return data;
   };
 
