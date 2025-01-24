@@ -16,46 +16,14 @@ function Header() {
   const [modalOn, setModalOn] = useState(false);
   const [modalType, setModalType] = useState("");
   const [headType, setHeadType] = useState("goods");
-  const [limit, setLimit] = useState(null); // 초기값을 null로 설정
-  const [timerActive, setTimerActive] = useState(false);
-  const [isLoggedOut, setIsLoggedOut] = useState(false); // 로그아웃 상태 관리
 
   useEffect(() => {
     getHeadType(thisLocation.pathname);
     if (login.userId) {
       getLimitandPoint();
-      setTimerActive(false); // 타이머 일시 정지
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [thisLocation, login.userId]);
-
-  useEffect(() => {
-    if (limit === null) return; // limit 값이 null일 때는 실행하지 않음
-
-    if (limit <= 0) {
-      if (!isLoggedOut) {
-        logout(); // 로그아웃 호출
-        setIsLoggedOut(true); // 로그아웃 한 번만 실행되도록 설정
-      }
-      setModalOn(false); // limit가 0이 되면 모달 닫기
-      return;
-    }
-
-    if (limit > 0 && limit < 60) {
-      setModalOn(true);
-      setModalType("limit");
-    } else {
-      setModalOn(false);
-    }
-
-    if (timerActive) {
-      const timer = setInterval(() => {
-        setLimit(prevLimit => prevLimit - 1);
-      }, 1000);
-
-      return () => clearInterval(timer);
-    }
-  }, [limit, timerActive, logout, isLoggedOut]);
 
   const extendLogin = async () => {
     try {
@@ -79,16 +47,24 @@ function Header() {
       const res = await kyApi.get("/api/v1/cafecon/common/exper_cookie").json();
 
       if (res.code === "C000") {
-        setLimit(res.limit);
         dispatch(loginUser({ point: res.point }));
-        setTimerActive(true); // 타이머 재개
-        setIsLoggedOut(false); // 로그아웃 상태 초기화
+        if (res.limit > 0 && res.limit < 300) {
+          const reset = extendLogin();
+          if (reset) {
+            const res = await kyApi
+              .get("/api/v1/cafecon/common/exper_cookie")
+              .json();
+            dispatch(loginUser({ point: res.point }));
+          } else {
+            logout();
+          }
+        }
       } else {
-        setLimit(0);
+        logout();
       }
     } catch (error) {
       console.error("Failed to fetch limit and point", error);
-      setLimit(0);
+      logout();
     }
   };
 
@@ -223,8 +199,6 @@ function Header() {
         setModalOn={setModalOn}
         modalType={modalType}
         setModalType={setModalType}
-        limit={limit}
-        setLimit={setLimit}
         extendLogin={extendLogin}
         getLimitandPoint={getLimitandPoint}
       />

@@ -89,7 +89,7 @@ function GoodsList() {
     };
     try {
       const res = await kyApi.get(listUrl, { searchParams: data }).json();
-      console.log(res);
+
       setGoods(res.goodsList);
       setResultNum(res.listNum);
       setLast(res.totalPages);

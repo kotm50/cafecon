@@ -94,7 +94,7 @@ function UploadFile(props) {
 
 UploadFile.propTypes = {
   setFile: PropTypes.func.isRequired,
-  setFileName: PropTypes.func.isRequired, // 추가된 propTypes
+  setFileName: PropTypes.func, // 추가된 propTypes
 };
 
 export default UploadFile;

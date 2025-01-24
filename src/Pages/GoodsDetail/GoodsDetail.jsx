@@ -24,14 +24,12 @@ function GoodsDetail() {
   const [modalType, setModalType] = useState("");
 
   useEffect(() => {
-    console.log(login);
     getGoods();
     //eslint-disable-next-line
   }, [thisLocation]);
   const isMobileDevice = () => {
-    return (
-      typeof window.orientation !== "undefined" ||
-      navigator.userAgent.indexOf("IEMobile") !== -1
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
     );
   };
 
@@ -42,7 +40,7 @@ function GoodsDetail() {
       const res = await kyApi
         .get(`/biz/v1/shop/goods/detail/${goodscode}`)
         .json();
-      console.log(res);
+
       setGoods(res.goods);
       setGoodsPrice(getPrice(res.goods.discountPrice));
       contentForm(res.goods.content);
@@ -101,7 +99,7 @@ function GoodsDetail() {
     const res = await kyApi
       .post("/api/v1/cafecon/common/goods/send", { json: data })
       .json();
-    console.log(res);
+
     if (res.code === "C000") {
       const point = await kyApi
         .get("/api/v1/cafecon/common/exper_cookie")
@@ -127,7 +125,7 @@ function GoodsDetail() {
     const res = await kyApi
       .post("/api/v1/cafecon/common/goods/send", { json: data })
       .json();
-    console.log(res);
+
     if (res.code === "0000") return "완료";
     return "실패";
   };
