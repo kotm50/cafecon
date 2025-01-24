@@ -395,9 +395,7 @@ function Join() {
               </div>
             </div>
             <div className="w-full border-y lg:border-x p-4 bg-white lg:rounded lg:shadow-lg flex flex-col gap-y-4">
-              <h3 className="font-extra">
-                기본정보 <span className="text-red-500">(필수)</span>
-              </h3>
+              <h3 className="font-extra">기본정보</h3>
               <div
                 id="id"
                 className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border ${
@@ -761,7 +759,7 @@ function Join() {
             </div>
             <div className="w-full border-y lg:border-x p-4 bg-white lg:rounded lg:shadow-lg flex flex-col gap-y-4">
               <h3 className="font-extra">
-                사업자 정보 <span className="text-gray-500">(선택)</span>{" "}
+                사업자 정보
                 {/* <span className="text-xs">세금계산서 발행 등에 필요합니다</span> */}
               </h3>
               <div

@@ -13,6 +13,8 @@ import Mypage from "./Pages/Mypage";
 import PointRequest from "./Pages/PointRequest";
 import PointList from "./Pages/PointList";
 import CouponList from "./Pages/CouponList/CouponList";
+import AdminMain from "./Pages/AdminMain/AdminMain";
+import AdminUserList from "./Pages/AdminUserList";
 function App() {
   return (
     <>
@@ -30,6 +32,9 @@ function App() {
           <Route path="pointreq" element={<PointRequest />} />
           <Route path="pointlist" element={<PointList />} />
           <Route path="couponlist" element={<CouponList />} />
+        </Route>
+        <Route path="/admin" element={<AdminMain />}>
+          <Route path="userlist" element={<AdminUserList />} />
         </Route>
       </Routes>
       <ToTop />

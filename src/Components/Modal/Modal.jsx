@@ -3,6 +3,7 @@ import warning from "../../assets/warning.svg";
 import Gifticon from "../Gifticon";
 import EditPwd from "../EditPwd/EditPwd";
 import Specification from "../Specification/Specification";
+import UserPointModal from "../UserPointModal";
 
 function Modal(props) {
   return (
@@ -44,6 +45,13 @@ function Modal(props) {
                 type="deposit"
                 pointInfo={props.pointInfo}
               />
+            ) : props.modalType === "userPoint" ? (
+              <UserPointModal
+                setModalOn={props.setModalOn}
+                setModalType={props.setModalType}
+                userInfo={props.userInfo}
+                getUserList={props.getUserList}
+              />
             ) : null}
           </div>
           <div
@@ -71,6 +79,8 @@ Modal.propTypes = {
   getLimitandPoint: PropTypes.func,
   setUserPwd: PropTypes.func,
   pointInfo: PropTypes.object,
+  userInfo: PropTypes.object,
+  getUserList: PropTypes.func,
 };
 
 export default Modal;
