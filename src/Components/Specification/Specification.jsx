@@ -66,7 +66,7 @@ function Specification(props) {
               </tr>
               <tr>
                 <th>대표자명</th>
-                <td>홍길동</td>
+                <td>홍길동.</td>
               </tr>
               <tr>
                 <th>업태</th>
