@@ -8,7 +8,6 @@ import { kyApi, getPrice } from "../../Api/Api";
 import Pagenation from "../../Components/Pagenation";
 
 import ImgLoad from "../../Components/ImgLoad";
-import MainCategory from "../../Components/MainCategory";
 import Sorry from "../../Components/Sorry";
 
 function GoodsList() {
@@ -124,59 +123,58 @@ function GoodsList() {
           카페콘닷컴
         </title>
       </Helmet>
-      <div className="w-full max-w-[1240px] mx-auto bg-white p-4">
-        <MainCategory />
-        {goods && goods.length > 0 ? (
-          <>
-            {keyword && (
-              <h3 className="text-lg lg:text-2xl p-2 bg-orange-50 rounded-lg mt-2 text-center lg:text-left">
-                <span className="font-neobold text-sky-500">{keyword}</span>
-                {checkName(keyword)} 검색하여 <br className="block lg:hidden" />
-                총{" "}
-                <span className="font-neobold text-red-500">{resultNum}</span>
-                개의 상품을 발견했습니다
-              </h3>
-            )}
-            <div className="w-full grid grid-cols-2 lg:grid-cols-5 gap-4">
-              {goods.map((good, idx) => (
-                <Link
-                  key={idx}
-                  to={`/goods/detail/${good.goodsCode}`}
-                  className="pb-0 min-h-0 h-fit"
-                >
-                  <div className="group p-2 rounded">
-                    <div className="w-32 h-32 lg:w-48 lg:h-48 mx-auto rounded overflow-hidden max-w-full bg-white drop-shadow hover:drop-shadow-xl border">
-                      <ImgLoad good={good} />
-                    </div>
-                    <div className="w-32 lg:w-48 mx-auto grid grid-cols-1 pt-1 border-gray-100 max-w-full mt-3">
-                      <p className="lg:text-base group-hover:font-neobold keep-all overflow-hidden text-ellipsis whitespace-nowrap text-left font-neobold text-blue-500">
-                        {good.brandName}
-                      </p>
-                      <p
-                        className="lg:text-lg group-hover:font-neobold keep-all overflow-hidden text-ellipsis whitespace-nowrap text-left"
-                        title={good.goodsName}
-                      >
-                        {good.goodsName}
-                      </p>
-                      <p className="lg:text-lg text-left mt-3">
-                        <span className="text-xl text-rose-500">
-                          {getPrice(
-                            Number(good.discountPrice)
-                          ).toLocaleString()}
-                        </span>{" "}
-                        P
-                      </p>
-                    </div>
+      {goods && goods.length > 0 ? (
+        <>
+          {keyword && (
+            <h3 className="text-lg lg:text-2xl p-2 bg-orange-50 rounded-lg mt-2 text-center lg:text-left">
+              <span className="font-neobold text-sky-500">{keyword}</span>
+              {checkName(keyword)} 검색하여 <br className="block lg:hidden" />총{" "}
+              <span className="font-neobold text-red-500">{resultNum}</span>
+              개의 상품을 발견했습니다
+            </h3>
+          )}
+          <div className="w-full grid grid-cols-2 lg:grid-cols-5 gap-4">
+            {goods.map((good, idx) => (
+              <Link
+                key={idx}
+                to={`/goods/detail/${good.goodsCode}`}
+                className="pb-0 min-h-0 h-fit"
+              >
+                <div className="group p-2 rounded">
+                  <div className="w-32 h-32 lg:w-48 lg:h-48 mx-auto rounded overflow-hidden max-w-full bg-white hover:drop-shadow-xl border">
+                    <ImgLoad good={good} type="goods" />
                   </div>
-                </Link>
-              ))}
-            </div>
-          </>
-        ) : (
-          <Sorry message={errMsg} />
-        )}
-        {goods && goods.length > 0 ? <Pagenation last={last} /> : null}
-      </div>
+                  <div className="w-32 lg:w-48 mx-auto grid grid-cols-1 pt-1 border-gray-100 max-w-full mt-3">
+                    <p className="lg:text-base group-hover:font-neobold keep-all overflow-hidden text-ellipsis whitespace-nowrap text-left font-neobold text-blue-500">
+                      {good.brandName}
+                    </p>
+                    <p
+                      className="lg:text-lg group-hover:font-neobold keep-all overflow-hidden text-ellipsis whitespace-nowrap text-left"
+                      title={good.goodsName}
+                    >
+                      {good.goodsName}
+                    </p>
+                    <p className="lg:text-lg text-left mt-3">
+                      <span className="text-xl text-rose-500">
+                        {getPrice(Number(good.discountPrice)).toLocaleString()}
+                      </span>{" "}
+                      P
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </>
+      ) : (
+        <Sorry message={errMsg} />
+      )}
+      {goods && goods.length > 0 ? (
+        <div className="my-10">
+          <Pagenation last={last} />
+        </div>
+      ) : null}
+
       {loading && (
         <div className="bg-white bg-opacity-55 w-[100vw] h-[100vh] fixed top-0 left-0 overflow-hidden z-[9999999999]">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-fit min-w-[50px] text-center flex flex-col justify-center z-[10000000000]">

@@ -68,6 +68,7 @@ function EditPwd(props) {
       .json();
     if (res.code === "C000") {
       alert("비밀번호가 변경되었습니다");
+      props.setUserPwd(pwd);
       props.setModalOn(false);
       props.setModalType("");
       setBeforePwd("");
@@ -263,6 +264,7 @@ EditPwd.propTypes = {
   user: PropTypes.shape({
     userId: PropTypes.string.isRequired,
   }).isRequired,
+  setUserPwd: PropTypes.func.isRequired,
 };
 
 export default EditPwd;

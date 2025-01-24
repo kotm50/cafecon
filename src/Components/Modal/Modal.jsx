@@ -3,6 +3,7 @@ import warning from "../../assets/warning.svg";
 import Gifticon from "../Gifticon";
 import ReLogin from "../ReLogin";
 import EditPwd from "../EditPwd/EditPwd";
+import Specification from "../Specification/Specification";
 
 function Modal(props) {
   return (
@@ -37,6 +38,21 @@ function Modal(props) {
                 setModalOn={props.setModalOn}
                 setModalType={props.setModalType}
                 user={props.login}
+                setUserPwd={props.setUserPwd}
+              />
+            ) : props.modalType === "purchaseSpecification" ? (
+              <Specification
+                setModalOn={props.setModalOn}
+                setModalType={props.setModalType}
+                type="withdraw"
+                pointInfo={props.pointInfo}
+              />
+            ) : props.modalType === "depositSpecification" ? (
+              <Specification
+                setModalOn={props.setModalOn}
+                setModalType={props.setModalType}
+                type="deposit"
+                pointInfo={props.pointInfo}
               />
             ) : null}
           </div>
@@ -65,6 +81,8 @@ Modal.propTypes = {
   setLimit: PropTypes.func,
   extendLogin: PropTypes.func,
   getLimitandPoint: PropTypes.func,
+  setUserPwd: PropTypes.func,
+  pointInfo: PropTypes.object,
 };
 
 export default Modal;

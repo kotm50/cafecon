@@ -1,0 +1,51 @@
+table.specification {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border:1px solid #ccc;
+    width:100%;
+    font-size:0.9rem;
+}
+
+table.specification th {
+ background-color:#eaeaea;
+ border:1px solid #ccc;
+ padding:8px;
+ font-weight:bold;
+ text-align:left;
+ vertical-align: middle;
+}
+
+table.specification th.center {
+    text-align:center;
+}
+
+table.specification th.right {
+    text-align:right;
+}
+
+
+table.specification td.center {
+    text-align:center;
+}
+
+table.specification td.right {
+    text-align:right;
+}
+table.specification td {
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:left;
+    vertical-align: middle;
+}
+
+div.specification {
+    font-size:0.9rem;
+}
+
+
+div.specification li {
+    list-style:disc;
+    margin-left:1rem;
+    margin-top:10px;
+    font-size:0.9rem;
+}

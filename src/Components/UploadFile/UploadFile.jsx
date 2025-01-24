@@ -10,6 +10,7 @@ function UploadFile(props) {
     if (!selectedFile) {
       // 파일 선택이 취소된 경우
       props.setFile(null);
+      props.setFileName(""); // 파일명 초기화
       setFileName(""); // 파일명 초기화
       setFileUrl(""); // 파일 URL 초기화
       return;
@@ -20,6 +21,7 @@ function UploadFile(props) {
     if (fileSizeInMB > 10) {
       alert("용량이 너무 큽니다. 수정 후 다시 업로드 해 주세요.");
       props.setFile(null); // 파일 초기화
+      props.setFileName(""); // 파일명 초기화
 
       event.target.value = ""; // input 값 초기화
       return;
@@ -29,6 +31,7 @@ function UploadFile(props) {
     setFileName(selectedFile.name);
     setFileUrl(URL.createObjectURL(selectedFile));
     props.setFile(selectedFile);
+    props.setFileName(selectedFile.name); // props로 파일명 저장
   };
 
   return (
@@ -60,6 +63,7 @@ function UploadFile(props) {
                 className="px-2 py-0.5 bg-[#efefef] hover:bg-[#e5e5e5] rounded-sm border border-black"
                 onClick={() => {
                   props.setFile(null);
+                  props.setFileName(""); // props로 파일명 초기화
                   setFileName(""); // 파일명 초기화
                   setFileUrl(""); // 파일 URL 초기화
                 }}
@@ -90,6 +94,7 @@ function UploadFile(props) {
 
 UploadFile.propTypes = {
   setFile: PropTypes.func.isRequired,
+  setFileName: PropTypes.func.isRequired, // 추가된 propTypes
 };
 
 export default UploadFile;

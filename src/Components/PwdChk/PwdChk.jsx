@@ -1,19 +1,16 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
 import { kyApi } from "../../Api/Api";
 
 function PwdChk(props) {
-  const [userPwd, setUserPwd] = useState("");
-
   const checkPwd = async e => {
     e.preventDefault();
-    if (userPwd === "") {
+    if (props.userPwd === "") {
       alert("비밀번호를 입력해 주세요");
       return;
     }
     const data = {
       userId: props.userId,
-      userPwd: userPwd,
+      userPwd: props.userPwd,
     };
     console.log(data);
     const res = await kyApi
@@ -42,9 +39,9 @@ function PwdChk(props) {
               type="password"
               id="inputPwd"
               className="border px-2 py-3 w-full rounded shadow-sm bg-gray-50"
-              value={userPwd}
-              onChange={e => setUserPwd(e.currentTarget.value)}
-              onBlur={e => setUserPwd(e.currentTarget.value)}
+              value={props.userPwd}
+              onChange={e => props.setUserPwd(e.currentTarget.value)}
+              onBlur={e => props.setUserPwd(e.currentTarget.value)}
               autoComplete="on"
             />
           </div>
@@ -63,6 +60,8 @@ function PwdChk(props) {
 PwdChk.propTypes = {
   setChecked: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
+  userPwd: PropTypes.string.isRequired,
+  setUserPwd: PropTypes.func.isRequired,
 };
 
 export default PwdChk;

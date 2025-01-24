@@ -21,8 +21,20 @@ function UserMain() {
       <Helmet>
         <title>{title} | 카페콘</title>
       </Helmet>
-      {site !== "login" && site !== "join" ? <MypageMenu /> : null}
-      <Outlet />
+      <div
+        className={`${
+          site === "login" || site === "join"
+            ? ""
+            : "w-full max-w-[1240px] mx-auto min-h-[calc(100vh-121px)]"
+        }`}
+      >
+        {site !== "login" && site !== "join" ? (
+          <div className="mb-5 pb-5 border-b  p-4 bg-white border-gray-100">
+            <MypageMenu />
+          </div>
+        ) : null}
+        <Outlet />
+      </div>
     </>
   );
 }

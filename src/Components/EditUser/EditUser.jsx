@@ -6,7 +6,7 @@ import { smsAuth, smsCert } from "../../Api/Auth";
 import { deleteFile, kyApi, uploadFile } from "../../Api/Api";
 //import PopupDom from "../../Api/Kakao/PopupDom";
 //import PopupPostCode from "../../Api/Kakao/PopupPostCode";
-//import PropTypes from "prop-types";
+import PropTypes from "prop-types";
 import DocModal from "../DocModal";
 
 function EditUser(props) {
@@ -15,7 +15,7 @@ function EditUser(props) {
   const [beforeFile, setBeforeFile] = useState(null);
   const [id, setId] = useState("");
   const [managerName, setManagerName] = useState("");
-
+  const [fileName, setFileName] = useState("");
   //const [mainAddr, setMainAddr] = useState("주소찾기를 눌러주세요");
   //const [sido, setSido] = useState("");
   // const [sigungu, setSigungu] = useState("");
@@ -69,21 +69,62 @@ function EditUser(props) {
       .json();
     console.log(res);
     setBeforeData(res.user);
-    setId(res.user.userId);
-    setManagerName(res.user.managerName);
-    setPhone(res.user.phone);
+    setId(res.user.userId || "");
+    setManagerName(res.user.managerName || "");
+    setPhone(res.user.phone || "");
     //setMainAddr(res.user.address);
 
-    setBusinessName(res.user.businessName);
-    setBusinessNo(res.user.businessNo);
-    setBusinessEmail(res.user.businessEmail);
-    setBeforeFile(res.user.businessLicense);
+    setBusinessName(res.user.businessName || "");
+    setBusinessNo(res.user.businessNo || "");
+    setBusinessEmail(res.user.businessEmail || "");
+    setBeforeFile(res.user.businessLicense || "");
     setMarketingAgree(res.user.agreeMarketing === "Y");
+    setFileName(res.user.businessLicenseName || "");
   };
 
   const modify = async e => {
     e.preventDefault();
-    console.log(e);
+    const data = await chkData();
+    console.log(data);
+    if (Object.keys(data).length === 0) {
+      return alert("수정된 내용이 없습니다. 확인 후 다시 시도해 주세요");
+    }
+    data.userId = props.login.userId;
+    data.userPwd = props.userPwd;
+    console.log(data);
+    const res = await kyApi
+      .put("/api/v1/cafecon/user/edit", { json: data })
+      .json();
+    console.log(res);
+    if (res.code === "C000") {
+      if (beforeData.businessLicense !== data.businessLicense) {
+        await deleteFile(beforeData.businessLicense);
+      }
+      alert("수정되었습니다");
+      navi("/");
+    } else {
+      alert("수정 실패. 다시 시도해 주세요");
+    }
+  };
+
+  const chkData = async () => {
+    const data = {};
+    if (phone !== beforeData.phone && phoneCertChk) data.phone = phone;
+    if (beforeData.businessName !== businessName)
+      data.businessName = businessName;
+    if (beforeData.businessEmail !== businessEmail)
+      data.businessEmail = businessEmail;
+    if (beforeData.businessNo !== businessNo) data.businessNo = businessNo;
+    if (businessFile) {
+      data.businessLicense = await uploadFile(businessFile, "company");
+      data.businessLicenseName = fileName;
+    }
+    const marketing = marketingAgree ? "Y" : "N";
+    if (marketing !== beforeData.agreeMarketing)
+      data.agreeMarketing = marketing;
+
+    console.log(data);
+    return data;
   };
 
   //이메일 및 중복검사
@@ -96,6 +137,36 @@ function EditUser(props) {
       } else {
         setCorrectEmail2(false);
       }
+    }
+  };
+
+  const getCert = async () => {
+    if (!phone || phone.length !== 11) {
+      return alert("휴대폰 번호를 정확히 입력해 주세요");
+    }
+    if (phone === beforeData.phone) {
+      return alert("이전 휴대폰 번호와 동일합니다");
+    }
+    setPhoneCertChk(false);
+    setPhoneCert("");
+    const res = await smsAuth(managerName, phone);
+    if (res.code === "C000") {
+      setPhoneChk(true);
+    } else {
+      return alert(
+        "인증번호 발송 실패. 이름과 휴대폰 번호를 확인해 주세요\n같은 현상이 반복되면 고객센터 1644-4223 으로 문의해 주세요"
+      );
+    }
+  };
+
+  const chkCert = async () => {
+    const res = await smsCert(managerName, phone, phoneCert);
+    if (res.code === "C000") {
+      setPhoneCertChk(true);
+    } else {
+      return alert(
+        "인증번호 확인 실패. 인증번호를 확인해 주세요\n같은 현상이 반복되면 고객센터 1644-4223 으로 문의해 주세요"
+      );
     }
   };
   return (
@@ -149,28 +220,11 @@ function EditUser(props) {
                 id="managerName"
                 className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border`}
               >
-                <label
-                  htmlFor="inputName"
-                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
-                >
+                <div className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100">
                   <div>이름</div>
-                </label>
+                </div>
                 <div className="lg:col-span-4">
-                  <input
-                    type="text"
-                    id="inputName"
-                    autoCapitalize="none"
-                    className={`border lg:border-0 p-2 w-full text-sm`}
-                    value={managerName}
-                    onChange={e => {
-                      setManagerName(e.currentTarget.value);
-                    }}
-                    onBlur={e => {
-                      setManagerName(e.currentTarget.value);
-                    }}
-                    placeholder="이름을 입력하세요"
-                    autoComplete="off"
-                  />
+                  <div className="p-2 text-sm">{managerName || "　"}</div>
                 </div>
               </div>
               <div
@@ -189,7 +243,7 @@ function EditUser(props) {
                       type="text"
                       id="inputPhone"
                       className={`border lg:border-0 p-2 w-full text-sm`}
-                      value={phone}
+                      value={phone || ""}
                       placeholder="'-' 없이 11자리 숫자만 입력해 주세요"
                       onChange={e => setPhone(e.currentTarget.value)}
                       onBlur={e => setPhone(e.currentTarget.value)}
@@ -225,7 +279,7 @@ function EditUser(props) {
                         type="text"
                         id="inputPhoneCert"
                         className={`border lg:border-0 p-2 w-full text-sm`}
-                        value={phoneCert}
+                        value={phoneCert || ""}
                         placeholder="인증번호를 입력해 주세요"
                         onChange={e => setPhoneCert(e.currentTarget.value)}
                         onBlur={e => setPhoneCert(e.currentTarget.value)}
@@ -271,7 +325,7 @@ function EditUser(props) {
                           ? "text-stone-500"
                           : undefined
                       }`}
-                      value={mainAddr}
+                      value={mainAddr || ""}
                       onChange={e => setMainAddr(e.currentTarget.value)}
                       onBlur={e => setMainAddr(e.currentTarget.value)}
                       disabled
@@ -307,7 +361,7 @@ function EditUser(props) {
                     id="inputBirth"
                     autoCapitalize="none"
                     className={`border lg:border-0 p-2 w-full text-sm`}
-                    value={birth}
+                    value={birth || "" }
                     onChange={e => {
                       setBirth(e.currentTarget.value);
                     }}
@@ -383,7 +437,7 @@ function EditUser(props) {
                   id="inputBusinessNo"
                   autoCapitalize="none"
                   className={`border lg:border-0 p-2 w-full text-sm`}
-                  value={businessNo}
+                  value={businessNo || ""}
                   onChange={e => {
                     setBusinessNo(e.currentTarget.value);
                   }}
@@ -411,7 +465,7 @@ function EditUser(props) {
                   id="inputBusiness"
                   autoCapitalize="none"
                   className={`border lg:border-0 p-2 w-full text-sm`}
-                  value={businessName}
+                  value={businessName || ""}
                   onChange={e => {
                     setBusinessName(e.currentTarget.value);
                   }}
@@ -439,7 +493,7 @@ function EditUser(props) {
                   id="inputBusinessEmail"
                   autoCapitalize="none"
                   className={`border lg:border-0 p-2 w-full text-sm`}
-                  value={businessEmail}
+                  value={businessEmail || ""}
                   onChange={e => {
                     setBusinessEmail(e.currentTarget.value);
                   }}
@@ -469,6 +523,21 @@ function EditUser(props) {
               <div className="lg:col-span-4">
                 <UploadFile file={businessFile} setFile={setBusinessFile} />
               </div>
+              {beforeFile && (
+                <>
+                  <div className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"></div>
+                  <div className="lg:col-span-4 p-2">
+                    <a
+                      href={beforeFile}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className=" text-xs p-2 bg-blue-100 block w-fit"
+                    >
+                      이전 사업자등록증 확인
+                    </a>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -512,13 +581,13 @@ function EditUser(props) {
               className="bg-blue-600 hover:bg-opacity-80 py-2 px-4 text-white rounded w-fit"
               type="submit"
             >
-              회원가입
+              정보수정
             </button>
             <button
               className="border bg-white hover:bg-gray-100 py-2 px-4 rounded w-fit"
               type="button"
               onClick={() => {
-                navi("/");
+                navi(-1);
               }}
             >
               취소
@@ -557,6 +626,7 @@ function EditUser(props) {
           setModalOn={setModalOn}
           setModalType={setModalType}
           login={props.login}
+          setUserPwd={props.setUserPwd}
         />
       ) : null}
     </>
@@ -567,6 +637,8 @@ EditUser.propTypes = {
   login: PropTypes.shape({
     userId: PropTypes.string.isRequired,
   }).isRequired,
+  userPwd: PropTypes.string.isRequired,
+  setUserPwd: PropTypes.func.isRequired,
 };
 
 export default EditUser;

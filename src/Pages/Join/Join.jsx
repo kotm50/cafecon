@@ -19,6 +19,8 @@ function Join() {
   const [correctPwdChk, setCorrectPwdChk] = useState(true);
   const [correctPwd, setCorrectPwd] = useState(true);
 
+  const [fileName, setFileName] = useState("");
+
   const [pwdMsg, setPwdMsg] = useState("");
   const [mainAddr, setMainAddr] = useState("주소찾기를 눌러주세요");
   const [sido, setSido] = useState("");
@@ -119,6 +121,7 @@ function Join() {
     if (businessEmail) data.businessEmail = businessEmail;
     if (companyFile)
       data.businessLicense = await uploadFile(companyFile, "company");
+    if (fileName) data.businessLicenseName = fileName;
     data.point = 1000;
     return { data, result: "완료" };
   };
@@ -864,7 +867,11 @@ function Join() {
                   <div>사업자등록증</div>
                 </div>
                 <div className="lg:col-span-4">
-                  <UploadFile file={companyFile} setFile={setCompanyFile} />
+                  <UploadFile
+                    file={companyFile}
+                    setFile={setCompanyFile}
+                    setFileName={setFileName}
+                  />
                 </div>
               </div>
             </div>

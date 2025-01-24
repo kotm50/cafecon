@@ -6,7 +6,7 @@ function ReLogin(props) {
   const extendCookie = async () => {
     try {
       const res = await props.extendLogin();
-      if (res) {
+      if (res.code === "C000") {
         const reload = await props.getLimitandPoint();
         if (reload) {
           props.setModalOn(false);
@@ -14,6 +14,8 @@ function ReLogin(props) {
         }
       } else {
         console.error("Failed to extend login session.");
+        props.setModalOn(false);
+        props.setModalType("");
       }
     } catch (error) {
       console.error("Error extending login session:", error);

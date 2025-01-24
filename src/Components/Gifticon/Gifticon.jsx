@@ -1,7 +1,11 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import { kyApi } from "../../Api/Api";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../Reducer/userSlice";
 
 function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
+  const dispatch = useDispatch();
   useEffect(() => {
     setSendNum(user.phone);
   }, [user]);
@@ -11,35 +15,54 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
   const [phone1, setPhone1] = useState({
     num: "",
     stat: "대기중",
+    memo: "",
   });
   const [phone2, setPhone2] = useState({
     num: "",
     stat: "대기중",
+    memo: "",
   });
   const [phone3, setPhone3] = useState({
     num: "",
     stat: "대기중",
+    memo: "",
   });
   const [phone4, setPhone4] = useState({
     num: "",
     stat: "대기중",
+    memo: "",
   });
   const [phone5, setPhone5] = useState({
     num: "",
     stat: "대기중",
+    memo: "",
   });
 
   const handlePhoneChange = (index, value) => {
     if (index === 1) {
-      setPhone1({ num: value, stat: phone1.stat });
+      setPhone1({ num: value, stat: phone1.stat, memo: phone1.memo });
     } else if (index === 2) {
-      setPhone2({ num: value, stat: phone2.stat });
+      setPhone2({ num: value, stat: phone2.stat, memo: phone2.memo });
     } else if (index === 3) {
-      setPhone3({ num: value, stat: phone3.stat });
+      setPhone3({ num: value, stat: phone3.stat, memo: phone3.memo });
     } else if (index === 4) {
-      setPhone4({ num: value, stat: phone4.stat });
+      setPhone4({ num: value, stat: phone4.stat, memo: phone4.memo });
     } else if (index === 5) {
-      setPhone5({ num: value, stat: phone5.stat });
+      setPhone5({ num: value, stat: phone5.stat, memo: phone5.memo });
+    }
+  };
+
+  const handleMemoChange = (index, value) => {
+    if (index === 1) {
+      setPhone1({ num: phone1.num, stat: phone1.stat, memo: value });
+    } else if (index === 2) {
+      setPhone2({ num: phone2.num, stat: phone2.stat, memo: value });
+    } else if (index === 3) {
+      setPhone3({ num: phone3.num, stat: phone3.stat, memo: value });
+    } else if (index === 4) {
+      setPhone4({ num: phone4.num, stat: phone4.stat, memo: value });
+    } else if (index === 5) {
+      setPhone5({ num: phone5.num, stat: phone5.stat, memo: value });
     }
   };
 
@@ -90,36 +113,60 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
     const phoneList = [];
     const completeList = [];
     const errList = [];
-    phoneList.push({ num: phone1.num, idx: 1 });
-    if (phoneCount > 1) phoneList.push({ num: phone2.num, idx: 2 });
-    if (phoneCount > 2) phoneList.push({ num: phone3.num, idx: 3 });
-    if (phoneCount > 3) phoneList.push({ num: phone4.num, idx: 4 });
-    if (phoneCount > 4) phoneList.push({ num: phone5.num, idx: 5 });
+    phoneList.push({ num: phone1.num, idx: 1, memo: phone1.memo });
+    if (phoneCount > 1)
+      phoneList.push({ num: phone2.num, idx: 2, memo: phone2.memo });
+    if (phoneCount > 2)
+      phoneList.push({ num: phone3.num, idx: 3, memo: phone3.memo });
+    if (phoneCount > 3)
+      phoneList.push({ num: phone4.num, idx: 4, memo: phone4.memo });
+    if (phoneCount > 4)
+      phoneList.push({ num: phone5.num, idx: 5, memo: phone5.memo });
     for (const num of phoneList) {
-      if (num.idx === 1) setPhone1({ num: num.num, stat: "전송중" });
-      if (num.idx === 2) setPhone2({ num: num.num, stat: "전송중" });
-      if (num.idx === 3) setPhone3({ num: num.num, stat: "전송중" });
-      if (num.idx === 4) setPhone4({ num: num.num, stat: "전송중" });
-      if (num.idx === 5) setPhone5({ num: num.num, stat: "전송중" });
-      const res = await buyIt(sendNum, num.num);
+      if (num.idx === 1)
+        setPhone1({ num: num.num, stat: "전송중", memo: num.memo });
+      if (num.idx === 2)
+        setPhone2({ num: num.num, stat: "전송중", memo: num.memo });
+      if (num.idx === 3)
+        setPhone3({ num: num.num, stat: "전송중", memo: num.memo });
+      if (num.idx === 4)
+        setPhone4({ num: num.num, stat: "전송중", memo: num.memo });
+      if (num.idx === 5)
+        setPhone5({ num: num.num, stat: "전송중", memo: num.memo });
+      const res = await buyIt(sendNum, num.num, num.memo);
       console.log(res);
       if (res === "완료") {
-        if (num.idx === 1) setPhone1({ num: num.num, stat: "완료" });
-        if (num.idx === 2) setPhone2({ num: num.num, stat: "완료" });
-        if (num.idx === 3) setPhone3({ num: num.num, stat: "완료" });
-        if (num.idx === 4) setPhone4({ num: num.num, stat: "완료" });
-        if (num.idx === 5) setPhone5({ num: num.num, stat: "완료" });
+        if (num.idx === 1)
+          setPhone1({ num: num.num, stat: "완료", memo: num.memo });
+        if (num.idx === 2)
+          setPhone2({ num: num.num, stat: "완료", memo: num.memo });
+        if (num.idx === 3)
+          setPhone3({ num: num.num, stat: "완료", memo: num.memo });
+        if (num.idx === 4)
+          setPhone4({ num: num.num, stat: "완료", memo: num.memo });
+        if (num.idx === 5)
+          setPhone5({ num: num.num, stat: "완료", memo: num.memo });
         completeList.push(num.num);
       } else {
-        if (num.idx === 1) setPhone1({ num: num.num, stat: "실패" });
-        if (num.idx === 2) setPhone2({ num: num.num, stat: "실패" });
-        if (num.idx === 3) setPhone3({ num: num.num, stat: "실패" });
-        if (num.idx === 4) setPhone4({ num: num.num, stat: "실패" });
-        if (num.idx === 5) setPhone5({ num: num.num, stat: "실패" });
+        if (num.idx === 1)
+          setPhone1({ num: num.num, stat: "실패", memo: num.memo });
+        if (num.idx === 2)
+          setPhone2({ num: num.num, stat: "실패", memo: num.memo });
+        if (num.idx === 3)
+          setPhone3({ num: num.num, stat: "실패", memo: num.memo });
+        if (num.idx === 4)
+          setPhone4({ num: num.num, stat: "실패", memo: num.memo });
+        if (num.idx === 5)
+          setPhone5({ num: num.num, stat: "실패", memo: num.memo });
         errList.push(num.num);
       }
     }
+
+    const point = await kyApi.get("/api/v1/cafecon/common/exper_cookie").json();
+    dispatch(loginUser({ point: point.point }));
+
     if (phoneList.length === completeList.length) {
+      alert("모든 번호로 발송되었습니다");
       setModalType("");
       setModalOn(false);
     }
@@ -141,7 +188,7 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
               id="phone"
               className="border border-gray-300 text-sm w-[85%] p-1"
               value={sendNum}
-              placeholder="'-' 없이 11자리 숫자만 입력해 주세요"
+              placeholder="'-' 없이 숫자만 입력해 주세요"
               onChange={e => setSendNum(e.target.value)}
             />
           </div>
@@ -152,10 +199,18 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
             <input
               type="text"
               id="phone1"
-              className="border  border-gray-300 text-sm w-[60%] p-1"
+              className="border  border-gray-300 text-sm w-[30%] p-1"
               value={phone1.num}
-              placeholder="'-' 없이 11자리 숫자만 입력해 주세요"
+              placeholder="'-' 없이 숫자만 입력"
               onChange={e => handlePhoneChange(1, e.target.value)}
+            />
+            <input
+              type="text"
+              id="memo1"
+              className="border  border-gray-300 text-sm w-[30%] p-1"
+              value={phone1.memo}
+              placeholder="고객 성함 등 간단메모"
+              onChange={e => handleMemoChange(1, e.target.value)}
             />
             <div className="w-[10%] font-bold p-1 text-center">
               {phone1.stat}
@@ -169,10 +224,18 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
               <input
                 type="text"
                 id="phone2"
-                className="border  border-gray-300 text-sm w-[60%] p-1"
+                className="border  border-gray-300 text-sm w-[30%] p-1"
                 value={phone2.num}
-                placeholder="'-' 없이 11자리 숫자만 입력해 주세요"
+                placeholder="'-' 없이 숫자만 입력해 주세요"
                 onChange={e => handlePhoneChange(2, e.target.value)}
+              />
+              <input
+                type="text"
+                id="memo2"
+                className="border  border-gray-300 text-sm w-[30%] p-1"
+                value={phone2.memo}
+                placeholder="고객 성함 등 간단메모"
+                onChange={e => handleMemoChange(2, e.target.value)}
               />
               <div className="w-[10%] font-bold p-1 text-center">
                 {phone2.stat}
@@ -196,10 +259,18 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
               <input
                 type="text"
                 id="phone3"
-                className="border  border-gray-300 text-sm w-[60%] p-1"
+                className="border  border-gray-300 text-sm w-[30%] p-1"
                 value={phone3.num}
-                placeholder="'-' 없이 11자리 숫자만 입력해 주세요"
+                placeholder="'-' 없이 숫자만 입력해 주세요"
                 onChange={e => handlePhoneChange(3, e.target.value)}
+              />
+              <input
+                type="text"
+                id="memo3"
+                className="border  border-gray-300 text-sm w-[30%] p-1"
+                value={phone3.memo}
+                placeholder="고객 성함 등 간단메모"
+                onChange={e => handleMemoChange(3, e.target.value)}
               />
               <div className="w-[10%] font-bold p-1 text-center">
                 {phone3.stat}
@@ -223,10 +294,18 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
               <input
                 type="text"
                 id="phone4"
-                className="border  border-gray-300 text-sm w-[60%] p-1"
+                className="border  border-gray-300 text-sm w-[30%] p-1"
                 value={phone4.num}
-                placeholder="'-' 없이 11자리 숫자만 입력해 주세요"
+                placeholder="'-' 없이 숫자만 입력해 주세요"
                 onChange={e => handlePhoneChange(4, e.target.value)}
+              />
+              <input
+                type="text"
+                id="memo4"
+                className="border  border-gray-300 text-sm w-[30%] p-1"
+                value={phone4.memo}
+                placeholder="고객 성함 등 간단메모"
+                onChange={e => handleMemoChange(4, e.target.value)}
               />
               <div className="w-[10%] font-bold p-1 text-center">
                 {phone4.stat}
@@ -250,10 +329,18 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
               <input
                 type="text"
                 id="phone5"
-                className="border  border-gray-300 text-sm w-[60%] p-1"
+                className="border  border-gray-300 text-sm w-[30%] p-1"
                 value={phone5.num}
-                placeholder="'-' 없이 11자리 숫자만 입력해 주세요"
+                placeholder="'-' 없이 숫자만 입력해 주세요"
                 onChange={e => handlePhoneChange(5, e.target.value)}
+              />
+              <input
+                type="text"
+                id="memo5"
+                className="border  border-gray-300 text-sm w-[30%] p-1"
+                value={phone5.memo}
+                placeholder="고객 성함 등 간단메모"
+                onChange={e => handleMemoChange(5, e.target.value)}
               />
               <div className="w-[10%] font-bold p-1 text-center">
                 {phone5.stat}
@@ -283,7 +370,7 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
         </div>
         <div className="w-full flex flex-center gap-x-[1%] mt-2 pt-2 border-t">
           <button
-            className="w-[60%] bg-blue-600 hover:bg-opacity-80 p-2 text-white rounded"
+            className="w-[30%] bg-blue-600 hover:bg-opacity-80 p-2 text-white rounded"
             onClick={() => buyAll()}
           >
             상품발송

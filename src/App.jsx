@@ -10,6 +10,9 @@ import Join from "./Pages/Join";
 import Login from "./Pages/Login";
 import UserMain from "./Pages/UserMain";
 import Mypage from "./Pages/Mypage";
+import PointRequest from "./Pages/PointRequest";
+import PointList from "./Pages/PointList";
+import CouponList from "./Pages/CouponList/CouponList";
 function App() {
   return (
     <>
@@ -24,6 +27,9 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="join" element={<Join />} />
           <Route path="mypage" element={<Mypage />} />
+          <Route path="pointreq" element={<PointRequest />} />
+          <Route path="pointlist" element={<PointList />} />
+          <Route path="couponlist" element={<CouponList />} />
         </Route>
       </Routes>
       <ToTop />
