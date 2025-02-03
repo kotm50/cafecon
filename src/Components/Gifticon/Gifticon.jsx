@@ -147,6 +147,10 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
         if (num.idx === 5)
           setPhone5({ num: num.num, stat: "완료", memo: num.memo });
         completeList.push(num.num);
+      } else if (res === "로그아웃") {
+        setModalType(""); // ✅ 로그아웃 시 모달 닫기
+        setModalOn(false);
+        break;
       } else {
         if (num.idx === 1)
           setPhone1({ num: num.num, stat: "실패", memo: num.memo });

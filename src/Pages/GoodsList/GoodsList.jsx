@@ -167,7 +167,7 @@ function GoodsList() {
           </div>
         </>
       ) : (
-        <Sorry message={errMsg} />
+        <>{!loading && <Sorry message={errMsg} />}</>
       )}
       {goods && goods.length > 0 ? (
         <div className="my-10">

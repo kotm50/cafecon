@@ -10,8 +10,10 @@ import { Helmet } from "react-helmet";
 
 function Join() {
   const navi = useNavigate();
+  const [submitNow, setSubmitNow] = useState(false);
   const [id, setId] = useState("");
   const [managerName, setManagerName] = useState("");
+  const [ownerName, setOwnerName] = useState("");
   const [pwd, setPwd] = useState("");
   const [pwdChk, setPwdChk] = useState("");
   const [correctId, setCorrectId] = useState(true);
@@ -22,9 +24,8 @@ function Join() {
   const [fileName, setFileName] = useState("");
 
   const [pwdMsg, setPwdMsg] = useState("");
-  const [mainAddr, setMainAddr] = useState("주소찾기를 눌러주세요");
-  const [sido, setSido] = useState("");
-  const [sigungu, setSigungu] = useState("");
+  const [businessAddress, setBusinessAddress] =
+    useState("주소찾기를 눌러주세요");
   const [phone, setPhone] = useState("");
   const [phoneChk, setPhoneChk] = useState(false);
   const [phoneCert, setPhoneCert] = useState("");
@@ -38,6 +39,9 @@ function Join() {
 
   const [businessName, setBusinessName] = useState("");
   const [businessNo, setBusinessNo] = useState("");
+  const [businessStatus, setBusinessStatus] = useState("");
+  const [businessSector, setBusinessSector] = useState("");
+  const [errNo, setErrNo] = useState(true);
   const [businessEmail, setBusinessEmail] = useState("");
   const [companyFile, setCompanyFile] = useState("");
 
@@ -63,6 +67,7 @@ function Join() {
 
   const join = async e => {
     e.preventDefault();
+    setSubmitNow(true);
     const { data, result } = await getData();
     if (result !== "완료") {
       return alert(result);
@@ -80,6 +85,7 @@ function Join() {
       alert("회원가입이 완료되었습니다");
       navi("/user/login");
     }
+    setSubmitNow(false);
   };
 
   const getData = async () => {
@@ -100,15 +106,19 @@ function Join() {
 
     //if (!gender) return { data, result: "성별을 선택해 주세요" };
     if (!birth) return { data, result: "생년월일을 입력해 주세요" };
-    if (!mainAddr) return { data, result: "주소를 입력해 주세요" };
+    if (!businessAddress) return { data, result: "주소를 입력해 주세요" };
+    if (!errNo) return { data, result: "사업자번호 양식을 확인해 주세요" };
+    if (!businessName) return { data, result: "사업자명을 입력해 주세요" };
+    if (!businessStatus) return { data, result: "업태를 입력해 주세요" };
+    if (!businessSector) return { data, result: "업종을 입력해 주세요" };
+    if (!businessEmail) return { data, result: "이메일을 입력해 주세요" };
+    if (!companyFile) return { data, result: "사업자등록증을 업로드해 주세요" };
     data.userId = id;
     data.managerName = managerName;
     data.userPwd = pwd;
     data.phone = phone;
 
-    data.address = mainAddr;
-    data.sido = sido;
-    data.sigungu = sigungu;
+    data.businessAddress = businessAddress;
     //data.birth = birth;
     //data.gender = gender;
     data.agreeTerms = "Y";
@@ -258,6 +268,25 @@ function Join() {
       return alert(
         "인증번호 확인 실패. 인증번호를 확인해 주세요\n같은 현상이 반복되면 고객센터 1644-4223 으로 문의해 주세요"
       );
+    }
+  };
+
+  const handleBusinessNo = e => {
+    const inputValue = e.target.value;
+
+    // 숫자만 허용 (정규식 사용)
+    if (/^\d*$/.test(inputValue)) {
+      setBusinessNo(inputValue); // 숫자만 입력 가능
+    }
+  };
+
+  const chkBusinessNo = e => {
+    const value = e.target.value;
+    if (value.length === 10) {
+      setBusinessNo(value); // 숫자만 입력 가능
+      setErrNo(true);
+    } else {
+      setErrNo(false);
     }
   };
 
@@ -416,7 +445,7 @@ function Join() {
                     id="inputId"
                     autoCapitalize="none"
                     className={`border ${
-                      !correctId || (!dupId ? "lg:border-red-500" : undefined)
+                      !correctId || (!dupId ? "lg:border-red-500" : "")
                     } lg:border-0 p-2 w-full text-sm`}
                     value={id}
                     onChange={e => {
@@ -463,7 +492,7 @@ function Join() {
                     type="password"
                     id="inputPwd"
                     className={`border ${
-                      !correctPwd ? "border-red-500" : undefined
+                      !correctPwd ? "border-red-500" : ""
                     } lg:border-0 p-2 w-full text-sm`}
                     value={pwd}
                     onChange={e => {
@@ -494,7 +523,7 @@ function Join() {
               <div
                 id="pwdChk"
                 className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border ${
-                  !correctPwdChk ? "lg:border-red-500" : undefined
+                  !correctPwdChk ? "lg:border-red-500" : ""
                 }`}
               >
                 <label
@@ -510,7 +539,7 @@ function Join() {
                     type="password"
                     id="inputPwdChk"
                     className={`border ${
-                      !correctPwdChk ? "border-red-500" : undefined
+                      !correctPwdChk ? "border-red-500" : ""
                     } lg:border-0 p-2 w-full text-sm`}
                     value={pwdChk}
                     onChange={e => {
@@ -581,7 +610,7 @@ function Join() {
                   <div>휴대폰</div>
                 </label>
                 <div className="lg:col-span-4 grid grid-cols-3 gap-1">
-                  <div className="col-span-2" title={mainAddr}>
+                  <div className="col-span-2" title={businessAddress}>
                     <input
                       type="text"
                       id="inputPhone"
@@ -617,7 +646,7 @@ function Join() {
                     <div>인증번호</div>
                   </label>
                   <div className="lg:col-span-4 grid grid-cols-3 gap-1">
-                    <div className="col-span-2" title={mainAddr}>
+                    <div className="col-span-2" title={businessAddress}>
                       <input
                         type="text"
                         id="inputPhoneCert"
@@ -647,46 +676,6 @@ function Join() {
                   </div>
                 </div>
               )}
-
-              <div
-                id="mainAddr"
-                className="hidden grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
-              >
-                <label
-                  htmlFor="inputMainAddr"
-                  className="text-sm text-left lg:text-right flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100 flex"
-                >
-                  <div>주소</div>
-                </label>
-                <div className="lg:col-span-4 grid grid-cols-3 gap-1">
-                  <div className="col-span-2" title={mainAddr}>
-                    <input
-                      type="text"
-                      id="inputMainAddr"
-                      className={`border lg:border-0 p-2 w-full text-sm ${
-                        mainAddr === "주소찾기를 눌러주세요"
-                          ? "text-stone-500"
-                          : undefined
-                      }`}
-                      value={mainAddr}
-                      onChange={e => setMainAddr(e.currentTarget.value)}
-                      onBlur={e => setMainAddr(e.currentTarget.value)}
-                      disabled
-                    />
-                  </div>
-                  <div>
-                    <button
-                      className="w-full h-full p-2 text-white bg-amber-600 hover:bg-opacity-80 text-sm"
-                      onClick={e => {
-                        e.preventDefault();
-                        openPostCode();
-                      }}
-                    >
-                      주소찾기
-                    </button>
-                  </div>
-                </div>
-              </div>
 
               <div
                 id="birth"
@@ -764,11 +753,15 @@ function Join() {
               </h3>
               <div
                 id="businessNo"
-                className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
+                className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border ${
+                  !errNo && "lg:border-red-500"
+                }`}
               >
                 <label
                   htmlFor="inputBusinessNo"
-                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+                  className={`text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 ${
+                    errNo ? "lg:bg-gray-100" : "lg:bg-red-100"
+                  } `}
                 >
                   <div>사업자번호</div>
                 </label>
@@ -777,19 +770,24 @@ function Join() {
                     type="text"
                     id="inputBusinessNo"
                     autoCapitalize="none"
-                    className={`border lg:border-0 p-2 w-full text-sm`}
+                    className={`border ${
+                      !errNo && "lg:border-red-500"
+                    } lg:border-0 p-2 w-full text-sm`}
                     value={businessNo}
-                    onChange={e => {
-                      setBusinessNo(e.currentTarget.value);
-                    }}
-                    onBlur={e => {
-                      setBusinessNo(e.currentTarget.value);
-                    }}
+                    onChange={handleBusinessNo}
+                    onBlur={chkBusinessNo}
                     placeholder="'-' 없이 10자리 숫자만 입력해 주세요"
                     autoComplete="off"
                   />
                 </div>
               </div>
+              {!errNo && (
+                <div className="text-sm text-rose-500">
+                  사업자번호 양식이 잘못되었습니다.{" "}
+                  <br className="block lg:hidden" />
+                  확인 후 다시 입력해 주세요
+                </div>
+              )}
               <div
                 id="company"
                 className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
@@ -816,6 +814,74 @@ function Join() {
                     placeholder="사업자명을 입력해 주세요"
                     autoComplete="off"
                   />
+                </div>
+              </div>
+
+              <div
+                id="ownerName"
+                className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border`}
+              >
+                <label
+                  htmlFor="inputOwnerName"
+                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+                >
+                  <div>대표자명</div>
+                </label>
+                <div className="lg:col-span-4">
+                  <input
+                    type="text"
+                    id="inputOwnerName"
+                    autoCapitalize="none"
+                    className={`border lg:border-0 p-2 w-full text-sm`}
+                    value={ownerName}
+                    onChange={e => {
+                      setOwnerName(e.currentTarget.value);
+                    }}
+                    onBlur={e => {
+                      setOwnerName(e.currentTarget.value);
+                    }}
+                    placeholder="미입력시 회원 성함이 대표자명이 됩니다"
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+              <div
+                id="businessAddress"
+                className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
+              >
+                <label
+                  htmlFor="inputMainAddr"
+                  className="text-sm text-left lg:text-right flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100 flex"
+                >
+                  <div>사업장 주소</div>
+                </label>
+                <div className="lg:col-span-4 grid grid-cols-3 gap-1">
+                  <div className="col-span-2" title={businessAddress}>
+                    <input
+                      type="text"
+                      id="inputMainAddr"
+                      className={`border lg:border-0 p-2 w-full text-sm ${
+                        businessAddress === "주소찾기를 눌러주세요"
+                          ? "text-stone-500"
+                          : ""
+                      }`}
+                      value={businessAddress}
+                      onChange={e => setBusinessAddress(e.currentTarget.value)}
+                      onBlur={e => setBusinessAddress(e.currentTarget.value)}
+                      disabled
+                    />
+                  </div>
+                  <div>
+                    <button
+                      className="w-full h-full p-2 text-white bg-amber-600 hover:bg-opacity-80 text-sm"
+                      onClick={e => {
+                        e.preventDefault();
+                        openPostCode();
+                      }}
+                    >
+                      주소찾기
+                    </button>
+                  </div>
                 </div>
               </div>
               <div
@@ -856,6 +922,63 @@ function Join() {
               )}
 
               <div
+                id="bstatus"
+                className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
+              >
+                <label
+                  htmlFor="inputStatus"
+                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+                >
+                  <div>업태</div>
+                </label>
+                <div className="lg:col-span-4">
+                  <input
+                    type="text"
+                    id="inputStatus"
+                    autoCapitalize="none"
+                    className={`border lg:border-0 p-2 w-full text-sm`}
+                    value={businessStatus}
+                    onChange={e => {
+                      setBusinessStatus(e.currentTarget.value);
+                    }}
+                    onBlur={e => {
+                      setBusinessStatus(e.currentTarget.value);
+                    }}
+                    placeholder="업태를 입력해 주세요"
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+
+              <div
+                id="bsector"
+                className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
+              >
+                <label
+                  htmlFor="inputSector"
+                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+                >
+                  <div>업종</div>
+                </label>
+                <div className="lg:col-span-4">
+                  <input
+                    type="text"
+                    id="inputSector"
+                    autoCapitalize="none"
+                    className={`border lg:border-0 p-2 w-full text-sm`}
+                    value={businessSector}
+                    onChange={e => {
+                      setBusinessSector(e.currentTarget.value);
+                    }}
+                    onBlur={e => {
+                      setBusinessSector(e.currentTarget.value);
+                    }}
+                    placeholder="업종을 입력해 주세요"
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+              <div
                 id="companyFile"
                 className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
               >
@@ -875,12 +998,14 @@ function Join() {
               <button
                 className="bg-blue-600 hover:bg-opacity-80 py-2 px-4 text-white rounded w-fit"
                 type="submit"
+                disabled={submitNow}
               >
                 회원가입
               </button>
               <button
                 className="border bg-white hover:bg-gray-100 py-2 px-4 rounded w-fit"
                 type="button"
+                disabled={submitNow}
                 onClick={() => {
                   navi("/");
                 }}
@@ -892,14 +1017,12 @@ function Join() {
         </form>
       </div>
 
-      <div id="popupDom" className={isPopupOpen ? "popupModal" : undefined}>
+      <div id="popupDom" className={isPopupOpen ? "popupModal" : ""}>
         {isPopupOpen && (
           <PopupDom>
             <PopupPostCode
               onClose={closePostCode}
-              setMainAddr={setMainAddr}
-              setSido={setSido}
-              setSigungu={setSigungu}
+              setMainAddr={setBusinessAddress}
               modify={false}
             />
           </PopupDom>

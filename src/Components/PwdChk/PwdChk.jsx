@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
-import { kyApi } from "../../Api/Api";
+import { kyApi, useLogout } from "../../Api/Api";
 
 function PwdChk(props) {
+  const logout = useLogout();
   const checkPwd = async e => {
     e.preventDefault();
     if (props.userPwd === "") {
@@ -15,6 +16,11 @@ function PwdChk(props) {
     const res = await kyApi
       .post("/api/v1/cafecon/user/check/pwd", { json: data })
       .json();
+
+    if (res.code === "E403") {
+      logout();
+      return false;
+    }
 
     if (res.code === "C000") {
       props.setChecked(true);

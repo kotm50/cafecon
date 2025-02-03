@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import "../../Pages/AdminUserList/User.css";
 import { useState } from "react";
-import { kyApi } from "../../Api/Api";
+import { kyApi, useLogout } from "../../Api/Api";
 function UserPointModal(props) {
+  const logout = useLogout();
   const [point, setPoint] = useState("");
   const pointSubmit = async logType => {
     const data = {
@@ -21,6 +22,9 @@ function UserPointModal(props) {
         props.setModalOn(false);
         props.setModalType("");
         alert(`포인트 ${logType} 완료`);
+      } else if (res.code === "E403") {
+        logout();
+        return false;
       }
     } catch (error) {
       console.log(error);

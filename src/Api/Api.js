@@ -10,26 +10,6 @@ export const kyApi = ky.create({
     "Content-Type": "application/json",
   },
   timeout: 10000, // 타임아웃 설정 (10초)
-  hooks: {
-    afterResponse: [
-      async (request, options, response) => {
-        // 로그아웃 API 제외
-        if (request.url.includes("/api/v1/cafecon/user/logout")) {
-          return response; // 그대로 응답 반환
-        }
-
-        // JSON 데이터 파싱
-        const data = await response.json();
-
-        // `code` 값 확인
-        if (data.code === "E403") {
-          // 특정 코드 값 처리
-          useLogout();
-          // 예: 토큰 갱신, 리다이렉트 등
-        }
-      },
-    ],
-  },
 });
 
 export const uploadFile = async (file, folder) => {
@@ -102,7 +82,6 @@ export const useLogout = () => {
         navigate("/"); // 로그아웃 후 홈 화면으로 리디렉션
         dispatch(clearUser()); // Redux 상태 초기화
       }
-      console.log(res);
     } catch (error) {
       console.error("로그아웃 오류:", error);
     }

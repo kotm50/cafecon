@@ -16,6 +16,7 @@ function Header() {
   const [modalOn, setModalOn] = useState(false);
   const [modalType, setModalType] = useState("");
   const [headType, setHeadType] = useState("goods");
+  const [limit, setLimit] = useState(null);
 
   useEffect(() => {
     getHeadType(thisLocation.pathname);
@@ -25,45 +26,57 @@ function Header() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [thisLocation, login.userId]);
 
+  useEffect(() => {
+    if (login.userId) {
+      if (limit === 0) {
+        logout();
+        setLimit(null);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [limit]);
+
+  useEffect(() => {
+    if (limit === 0) return; // limit이 0이면 setInterval 실행 안 함
+
+    const interval = setInterval(() => {
+      setLimit(prevLimit => Math.max(prevLimit - 1, 0)); // 0 이하로 내려가지 않도록 설정
+    }, 1000);
+
+    return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 제거
+  }, [limit]);
+
   const extendLogin = async () => {
     try {
       const res = await kyApi
         .get("/api/v1/cafecon/common/reissu/AccessToken")
         .json();
       if (res.code === "C000") {
-        return true;
+        await getLimitandPoint();
       }
-      return false;
+      console.log(res);
     } catch (error) {
       console.error("Failed to extend login session", error);
-      return false;
+      logout();
     }
   };
 
   const getLimitandPoint = async () => {
     if (!login.userId) return; // 로그인 상태가 아닌 경우 실행하지 않음
-
+    setLimit(3600);
     try {
       const res = await kyApi.get("/api/v1/cafecon/common/exper_cookie").json();
 
       if (res.code === "C000") {
         dispatch(loginUser({ point: res.point }));
-        if (res.limit > 0 && res.limit < 300) {
-          const reset = extendLogin();
-          if (reset) {
-            const res = await kyApi
-              .get("/api/v1/cafecon/common/exper_cookie")
-              .json();
-            dispatch(loginUser({ point: res.point }));
-          } else {
-            logout();
-          }
-        }
+        setLimit(res.limit);
       } else {
+        setLimit(null);
         logout();
       }
     } catch (error) {
       console.error("Failed to fetch limit and point", error);
+      setLimit(null);
       logout();
     }
   };
@@ -75,6 +88,11 @@ function Header() {
       const path = p.split("/")[1];
       setHeadType(path);
     }
+  };
+
+  const doLogout = async () => {
+    await logout();
+    setLimit(null);
   };
 
   return (
@@ -109,6 +127,16 @@ function Header() {
                             P 보유중
                           </div>
                         </div>
+                        {login.role === "ADMIN" && (
+                          <>
+                            <button
+                              onClick={() => navi("/admin")}
+                              className="px-4 py-2 bg-amber-800 hover:bg-opacity-80 text-white rounded-lg"
+                            >
+                              관리자페이지
+                            </button>
+                          </>
+                        )}
                         <button
                           onClick={() => navi("/user/mypage")}
                           className="px-4 py-2 bg-primary hover:bg-opacity-80 text-white rounded-lg"
@@ -161,6 +189,14 @@ function Header() {
                           >
                             샵으로 이동
                           </button>
+                          {login.role === "ADMIN" && (
+                            <button
+                              onClick={() => navi("/admin")}
+                              className="px-4 py-2 bg-amber-800 hover:bg-opacity-80 text-white rounded-lg"
+                            >
+                              관리자페이지
+                            </button>
+                          )}
                           <button
                             onClick={() => logout()}
                             className="px-4 py-2 bg-success hover:bg-opacity-80 text-white rounded-lg"
@@ -186,10 +222,75 @@ function Header() {
                       </>
                     )}
                   </div>
+                ) : headType === "admin" ? (
+                  <div className="flex justify-end gap-x-2 pb-2">
+                    {login.userId ? (
+                      <>
+                        <div className="p-2 flex justify-start gap-x-2">
+                          <div>{login.managerName}님</div>
+                          <div>
+                            <span className="font-extra text-indigo-600">
+                              {!isNaN(login.point)
+                                ? login.point.toLocaleString()
+                                : 0}
+                            </span>
+                            P 보유중
+                          </div>
+                        </div>
+                        <div className="flex gap-x-2">
+                          <button
+                            onClick={() => navi("/goods/list")}
+                            className="px-4 py-2 bg-primary hover:bg-opacity-80 text-white rounded-lg"
+                          >
+                            샵으로 이동
+                          </button>
+                          <button
+                            onClick={() => navi("/user/mypage")}
+                            className="px-4 py-2 bg-amber-800 hover:bg-opacity-80 text-white rounded-lg"
+                          >
+                            마이페이지
+                          </button>
+                          <button
+                            onClick={() => logout()}
+                            className="px-4 py-2 bg-success hover:bg-opacity-80 text-white rounded-lg"
+                          >
+                            로그아웃
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <>로그인이 필요합니다</>
+                    )}
+                  </div>
                 ) : null}
               </div>
             </div>
           </header>
+        </>
+      )}
+      {limit > 0 && limit < 60 && (
+        <>
+          <div className="fixed z-[999] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-b-0 flex flex-col justify-start gap-x-2 p-4 rounded-lg">
+            <div className="p-2">
+              <span className="font-extra text-indigo-600">{limit}</span>초 뒤
+              로그아웃 됩니다
+            </div>
+            <div className="p-2 text-center flex justify-center gap-x-2">
+              <button
+                className="bg-success hover:bg-opacity-80 text-white rounded-lg px-4 py-2 font-bold"
+                onClick={() => extendLogin()}
+              >
+                연장하기
+              </button>
+              <button
+                className="border border-success bg-white hover:bg-gray-100 text-success rounded-lg px-4 py-2"
+                onClick={() => doLogout()}
+              >
+                로그아웃
+              </button>
+            </div>
+          </div>
+          <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-60 z-[998]"></div>
         </>
       )}
 

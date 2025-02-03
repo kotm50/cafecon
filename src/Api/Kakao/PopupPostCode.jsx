@@ -17,16 +17,7 @@ const PopupPostCode = props => {
       }
       fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
     }
-    if (props.modify) {
-      props.editIt("/api/v1/user/myinfo/editaddr", "mainAddr", fullAddress);
-      props.setMainAddr(fullAddress);
-      props.setSido(data.sido);
-      props.setSigungu(data.sigungu);
-    } else {
-      props.setMainAddr(fullAddress);
-      props.setSido(data.sido);
-      props.setSigungu(data.sigungu);
-    }
+    props.setMainAddr(fullAddress);
     props.onClose();
   };
   return (

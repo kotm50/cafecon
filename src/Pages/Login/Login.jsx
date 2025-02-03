@@ -28,7 +28,6 @@ function Login() {
     const res = await kyApi
       .post("/api/v1/cafecon/user/login", { json: data })
       .json();
-    console.log(res.user);
     if (res.code !== "C000") {
       setErrMessage(res.message);
       setIsErr(true);

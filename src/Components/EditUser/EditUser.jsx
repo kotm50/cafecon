@@ -3,22 +3,25 @@ import { useNavigate } from "react-router-dom";
 import UploadFile from "../../Components/UploadFile";
 import Modal from "../Modal";
 import { smsAuth, smsCert } from "../../Api/Auth";
-import { deleteFile, kyApi, uploadFile } from "../../Api/Api";
-//import PopupDom from "../../Api/Kakao/PopupDom";
-//import PopupPostCode from "../../Api/Kakao/PopupPostCode";
+import { deleteFile, kyApi, uploadFile, useLogout } from "../../Api/Api";
+import PopupDom from "../../Api/Kakao/PopupDom";
+import PopupPostCode from "../../Api/Kakao/PopupPostCode";
 import PropTypes from "prop-types";
 import DocModal from "../DocModal";
 
 function EditUser(props) {
   const navi = useNavigate();
+  const logout = useLogout();
+  const [submitNow, setSubmitNow] = useState(false);
   const [beforeData, setBeforeData] = useState(null);
   const [beforeFile, setBeforeFile] = useState(null);
   const [id, setId] = useState("");
   const [managerName, setManagerName] = useState("");
+  const [ownerName, setOwnerName] = useState("");
   const [fileName, setFileName] = useState("");
-  //const [mainAddr, setMainAddr] = useState("주소찾기를 눌러주세요");
-  //const [sido, setSido] = useState("");
-  // const [sigungu, setSigungu] = useState("");
+  const [businessAddress, setBusinessAddress] =
+    useState("주소찾기를 눌러주세요");
+
   const [phone, setPhone] = useState("");
   const [phoneChk, setPhoneChk] = useState(false);
   const [phoneCert, setPhoneCert] = useState("");
@@ -29,6 +32,9 @@ function EditUser(props) {
 
   const [businessName, setBusinessName] = useState("");
   const [businessNo, setBusinessNo] = useState("");
+  const [businessStatus, setBusinessStatus] = useState("");
+  const [businessSector, setBusinessSector] = useState("");
+  const [errNo, setErrNo] = useState(true);
   const [businessEmail, setBusinessEmail] = useState("");
   const [businessFile, setBusinessFile] = useState("");
 
@@ -40,10 +46,9 @@ function EditUser(props) {
 
   //const [birth, setBirth] = useState("2000-01-01");
   //const [gender, setGender] = useState("여자");
-  /*
+
   // 팝업창 상태 관리
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
 
   // 팝업창 열기
   const openPostCode = () => {
@@ -55,9 +60,9 @@ function EditUser(props) {
     setIsPopupOpen(false);
   };
 
-  */
   useEffect(() => {
     getUserInfo();
+    //eslint-disable-next-line
   }, []);
 
   const getUserInfo = async () => {
@@ -67,12 +72,18 @@ function EditUser(props) {
     const res = await kyApi
       .post("/api/v1/cafecon/user/find/one", { json: data })
       .json();
+    if (res.code === "E403") {
+      logout();
+      return false;
+    }
     setBeforeData(res.user);
     setId(res.user.userId || "");
     setManagerName(res.user.managerName || "");
     setPhone(res.user.phone || "");
-    //setMainAddr(res.user.address);
-
+    setOwnerName(res.user.ownerName || "");
+    setBusinessStatus(res.user.businessStatus || "");
+    setBusinessSector(res.user.businessSector || "");
+    setBusinessAddress(res.user.businessAddress || "주소찾기를 눌러주세요");
     setBusinessName(res.user.businessName || "");
     setBusinessNo(res.user.businessNo || "");
     setBusinessEmail(res.user.businessEmail || "");
@@ -83,6 +94,7 @@ function EditUser(props) {
 
   const modify = async e => {
     e.preventDefault();
+    setSubmitNow(true);
     const data = await chkData();
     if (Object.keys(data).length === 0) {
       return alert("수정된 내용이 없습니다. 확인 후 다시 시도해 주세요");
@@ -94,13 +106,16 @@ function EditUser(props) {
       .json();
     if (res.code === "C000") {
       if (beforeData.businessLicense !== data.businessLicense) {
-        await deleteFile(beforeData.businessLicense);
+        if (data.businessLicense) await deleteFile(beforeData.businessLicense);
       }
       alert("수정되었습니다");
       navi("/");
+    } else if (res.code === "E403") {
+      logout();
     } else {
       alert("수정 실패. 다시 시도해 주세요");
     }
+    setSubmitNow(false);
   };
 
   const chkData = async () => {
@@ -110,7 +125,9 @@ function EditUser(props) {
       data.businessName = businessName;
     if (beforeData.businessEmail !== businessEmail)
       data.businessEmail = businessEmail;
-    if (beforeData.businessNo !== businessNo) data.businessNo = businessNo;
+    if (beforeData.businessNo !== businessNo) {
+      if (errNo) data.businessNo = businessNo;
+    }
     if (businessFile) {
       data.businessLicense = await uploadFile(businessFile, "company");
       data.businessLicenseName = fileName;
@@ -118,7 +135,12 @@ function EditUser(props) {
     const marketing = marketingAgree ? "Y" : "N";
     if (marketing !== beforeData.agreeMarketing)
       data.agreeMarketing = marketing;
-
+    if (beforeData.businessStatus !== businessStatus)
+      data.businessStatus = businessStatus;
+    if (beforeData.businessSector !== businessSector)
+      data.businessSector = businessSector;
+    if (beforeData.businessAddress !== businessAddress)
+      data.businessAddress = businessAddress;
     return data;
   };
 
@@ -164,6 +186,25 @@ function EditUser(props) {
       );
     }
   };
+
+  const handleBusinessNo = e => {
+    const inputValue = e.target.value;
+
+    // 숫자만 허용 (정규식 사용)
+    if (/^\d*$/.test(inputValue)) {
+      setBusinessNo(inputValue); // 숫자만 입력 가능
+    }
+  };
+
+  const chkBusinessNo = e => {
+    const value = e.target.value;
+    if (value.length === 10) {
+      setErrNo(true);
+    } else {
+      setErrNo(false);
+    }
+  };
+
   return (
     <>
       <div className="w-full max-w-[600px] mx-auto">
@@ -301,46 +342,6 @@ function EditUser(props) {
               )}
               {/*
               <div
-                id="mainAddr"
-                className="grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border hidden"
-              >
-                <label
-                  htmlFor="inputMainAddr"
-                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
-                >
-                  <div>주소</div>
-                </label>
-                <div className="lg:col-span-4 grid grid-cols-3 gap-1">
-                  <div className="col-span-2">
-                    <input
-                      type="text"
-                      id="inputMainAddr"
-                      className={`border lg:border-0 p-2 w-full text-sm ${
-                        mainAddr === "주소찾기를 눌러주세요"
-                          ? "text-stone-500"
-                          : undefined
-                      }`}
-                      value={mainAddr || ""}
-                      onChange={e => setMainAddr(e.currentTarget.value)}
-                      onBlur={e => setMainAddr(e.currentTarget.value)}
-                      disabled
-                    />
-                  </div>
-                  <div>
-                    <button
-                      className="w-full h-full p-2 text-white bg-amber-600 hover:bg-opacity-80 text-sm"
-                      onClick={e => {
-                        e.preventDefault();
-                        openPostCode();
-                      }}
-                    >
-                      주소찾기
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div
                 id="birth"
                 className={`hidden grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border`}
               >
@@ -413,16 +414,21 @@ function EditUser(props) {
           </div>
           <div className="w-full border-y lg:border-x p-4 bg-white lg:rounded lg:shadow-lg flex flex-col gap-y-4  mb-5">
             <h3 className="font-extra">
-              사업자 정보 <span className="text-gray-500">(선택)</span>{" "}
+              사업자 정보
               {/* <span className="text-xs">세금계산서 발행 등에 필요합니다</span> */}
             </h3>
+
             <div
               id="businessNo"
-              className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
+              className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border ${
+                !errNo && "lg:border-red-500"
+              }`}
             >
               <label
                 htmlFor="inputBusinessNo"
-                className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+                className={`text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 ${
+                  errNo ? "lg:bg-gray-100" : "lg:bg-red-100"
+                } `}
               >
                 <div>사업자번호</div>
               </label>
@@ -431,19 +437,27 @@ function EditUser(props) {
                   type="text"
                   id="inputBusinessNo"
                   autoCapitalize="none"
-                  className={`border lg:border-0 p-2 w-full text-sm`}
-                  value={businessNo || ""}
-                  onChange={e => {
-                    setBusinessNo(e.currentTarget.value);
+                  className={`border ${
+                    !errNo && "lg:border-red-500"
+                  } lg:border-0 p-2 w-full text-sm`}
+                  value={businessNo}
+                  onFocus={() => {
+                    setErrNo(true);
                   }}
-                  onBlur={e => {
-                    setBusinessNo(e.currentTarget.value);
-                  }}
+                  onChange={handleBusinessNo}
+                  onBlur={chkBusinessNo}
                   placeholder="'-' 없이 10자리 숫자만 입력해 주세요"
                   autoComplete="off"
                 />
               </div>
             </div>
+            {!errNo && (
+              <div className="text-sm text-rose-500">
+                사업자번호 양식이 잘못되었습니다.{" "}
+                <br className="block lg:hidden" />
+                확인 후 다시 입력해 주세요
+              </div>
+            )}
             <div
               id="businessName"
               className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
@@ -470,6 +484,74 @@ function EditUser(props) {
                   placeholder="사업자명을 입력해 주세요"
                   autoComplete="off"
                 />
+              </div>
+            </div>
+
+            <div
+              id="ownerName"
+              className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border`}
+            >
+              <label
+                htmlFor="inputOwnerName"
+                className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+              >
+                <div>대표자명</div>
+              </label>
+              <div className="lg:col-span-4">
+                <input
+                  type="text"
+                  id="inputOwnerName"
+                  autoCapitalize="none"
+                  className={`border lg:border-0 p-2 w-full text-sm`}
+                  value={ownerName}
+                  onChange={e => {
+                    setOwnerName(e.currentTarget.value);
+                  }}
+                  onBlur={e => {
+                    setOwnerName(e.currentTarget.value);
+                  }}
+                  placeholder="미입력시 회원 성함이 대표자명이 됩니다"
+                  autoComplete="off"
+                />
+              </div>
+            </div>
+            <div
+              id="businessAddress"
+              className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
+            >
+              <label
+                htmlFor="inputMainAddr"
+                className="text-sm text-left lg:text-right flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100 flex"
+              >
+                <div>사업장 주소</div>
+              </label>
+              <div className="lg:col-span-4 grid grid-cols-3 gap-1">
+                <div className="col-span-2" title={businessAddress}>
+                  <input
+                    type="text"
+                    id="inputMainAddr"
+                    className={`border lg:border-0 p-2 w-full text-sm ${
+                      businessAddress === "주소찾기를 눌러주세요"
+                        ? "text-stone-500"
+                        : ""
+                    }`}
+                    value={businessAddress}
+                    onChange={e => setBusinessAddress(e.currentTarget.value)}
+                    onBlur={e => setBusinessAddress(e.currentTarget.value)}
+                    disabled
+                  />
+                </div>
+                <div>
+                  <button
+                    className="w-full h-full p-2 text-white bg-amber-600 hover:bg-opacity-80 text-sm"
+                    onClick={e => {
+                      e.preventDefault();
+                      openPostCode();
+                    }}
+                  >
+                    주소찾기
+                  </button>
+                </div>
               </div>
             </div>
             <div
@@ -508,6 +590,63 @@ function EditUser(props) {
               </div>
             )}
 
+            <div
+              id="bstatus"
+              className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
+            >
+              <label
+                htmlFor="inputStatus"
+                className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+              >
+                <div>업태</div>
+              </label>
+              <div className="lg:col-span-4">
+                <input
+                  type="text"
+                  id="inputStatus"
+                  autoCapitalize="none"
+                  className={`border lg:border-0 p-2 w-full text-sm`}
+                  value={businessStatus}
+                  onChange={e => {
+                    setBusinessStatus(e.currentTarget.value);
+                  }}
+                  onBlur={e => {
+                    setBusinessStatus(e.currentTarget.value);
+                  }}
+                  placeholder="업태를 입력해 주세요"
+                  autoComplete="off"
+                />
+              </div>
+            </div>
+
+            <div
+              id="bsector"
+              className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
+            >
+              <label
+                htmlFor="inputSector"
+                className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+              >
+                <div>업종</div>
+              </label>
+              <div className="lg:col-span-4">
+                <input
+                  type="text"
+                  id="inputSector"
+                  autoCapitalize="none"
+                  className={`border lg:border-0 p-2 w-full text-sm`}
+                  value={businessSector}
+                  onChange={e => {
+                    setBusinessSector(e.currentTarget.value);
+                  }}
+                  onBlur={e => {
+                    setBusinessSector(e.currentTarget.value);
+                  }}
+                  placeholder="업종을 입력해 주세요"
+                  autoComplete="off"
+                />
+              </div>
+            </div>
             <div
               id="businessFile"
               className="grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border"
@@ -575,12 +714,14 @@ function EditUser(props) {
             <button
               className="bg-blue-600 hover:bg-opacity-80 py-2 px-4 text-white rounded w-fit"
               type="submit"
+              disabled={submitNow}
             >
               정보수정
             </button>
             <button
               className="border bg-white hover:bg-gray-100 py-2 px-4 rounded w-fit"
               type="button"
+              disabled={submitNow}
               onClick={() => {
                 navi(-1);
               }}
@@ -590,22 +731,18 @@ function EditUser(props) {
           </div>
         </form>
       </div>
-
-      {/*
       <div id="popupDom" className={isPopupOpen ? "popupModal" : undefined}>
         {isPopupOpen && (
           <PopupDom>
             <PopupPostCode
               onClose={closePostCode}
-              setMainAddr={setMainAddr}
-              setSido={setSido}
-              setSigungu={setSigungu}
+              setMainAddr={setBusinessAddress}
               modify={false}
             />
           </PopupDom>
         )}
       </div>
-*/}
+      *
       {docModalOn ? (
         <DocModal
           modalCount={docModalCount}
@@ -613,7 +750,6 @@ function EditUser(props) {
           setModalCount={setDocModalCount}
         />
       ) : null}
-
       {modalOn ? (
         <Modal
           modalOn={modalOn}

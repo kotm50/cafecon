@@ -3,11 +3,12 @@ import { Helmet } from "react-helmet";
 import { useLocation, /* useNavigate, */ useParams } from "react-router-dom";
 import Modal from "../../Components/Modal";
 import dompurify from "dompurify";
-import { kyApi, getPrice } from "../../Api/Api";
+import { kyApi, getPrice, useLogout } from "../../Api/Api";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../Reducer/userSlice";
 
 function GoodsDetail() {
+  const logout = useLogout();
   const dispatch = useDispatch();
   const login = useSelector(state => state.user);
   const sanitizer = dompurify.sanitize;
@@ -40,6 +41,10 @@ function GoodsDetail() {
       const res = await kyApi
         .get(`/biz/v1/shop/goods/detail/${goodscode}`)
         .json();
+      if (res.code === "E403") {
+        logout();
+        return false;
+      }
 
       setGoods(res.goods);
       setGoodsPrice(getPrice(res.goods.discountPrice));
@@ -106,6 +111,8 @@ function GoodsDetail() {
         .json();
       alert("구매 완료");
       dispatch(loginUser({ point: point.point }));
+    } else if (res.code === "E403") {
+      logout();
     }
   };
 
@@ -127,6 +134,10 @@ function GoodsDetail() {
       .json();
 
     if (res.code === "0000") return "완료";
+    if (res.code === "E403") {
+      logout();
+      return "로그아웃";
+    }
     return "실패";
   };
 
