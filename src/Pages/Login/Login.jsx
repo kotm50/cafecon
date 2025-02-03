@@ -47,7 +47,7 @@ function Login() {
   };
 
   useEffect(() => {
-    if (login.userId) navi("/");
+    if (login.userId) navi(-1);
   }, [thisLocation, login, navi]);
 
   return (

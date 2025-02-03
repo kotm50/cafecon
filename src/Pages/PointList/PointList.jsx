@@ -78,18 +78,15 @@ function PointList() {
       if (keyword) data.searchKeyword = keyword;
     }
     const res = await kyApi.post(url, { json: data }).json();
-    if (status === "deposit") {
-      setPointList(res.depositList);
-    } else {
-      setPointList(res.pointLogList);
-    }
+    console.log(res);
+    setPointList(res.pointLogList);
     setLast(res.totalPages);
     setLoading(false);
   };
 
   const chkApi = async status => {
     if (status === "deposit") {
-      return "/api/v1/cafecon/deposit/find/one";
+      return "/api/v1/cafecon/user/find/chargeList";
     } else {
       return "/api/v1/cafecon/user/find/pointLogList";
     }

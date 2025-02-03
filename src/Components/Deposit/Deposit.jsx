@@ -26,14 +26,11 @@ function Deposit(props) {
                 </td>
                 <td>
                   <span className="font-extra text-blue-500">
-                    {item.chargePoint ? item.chargePoint.toLocaleString() : 0}
+                    {item.point ? item.point.toLocaleString() : 0}
                   </span>
                   P
                 </td>
-                <td>
-                  {item.depositAmount ? item.depositAmount.toLocaleString() : 0}
-                  원
-                </td>
+                <td>{item.point ? item.point.toLocaleString() : 0}원</td>
                 <td>
                   <button
                     className="py-2 px-4 bg-gray-200 border border-gray-500 hover:bg-opacity-50"

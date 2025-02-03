@@ -15,6 +15,7 @@ function Specification(props) {
   const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
+    console.log(props.pointInfo);
     getUserInfo();
     //eslint-disable-next-line
   }, []);
@@ -174,11 +175,17 @@ function Specification(props) {
                       </td>
                       <td className="center">{props.pointInfo.orderNo}</td>
                       <td className="center">
-                        {props.pointInfo.point.toLocaleString()}
+                        {props.pointInfo.point
+                          ? props.pointInfo.point.toLocaleString()
+                          : 0}{" "}
+                        원
                       </td>
                       <td className="center">-</td>
                       <td className="center">
-                        {props.pointInfo.point.toLocaleString()}
+                        {props.pointInfo.point
+                          ? props.pointInfo.point.toLocaleString()
+                          : 0}{" "}
+                        원
                       </td>
                     </tr>
                   </tbody>
@@ -186,8 +193,8 @@ function Specification(props) {
                 <table className="w-full specification">
                   <thead>
                     <tr>
-                      <th className="center">No</th>
                       <th className="center">구매일시</th>
+                      <th className="center">No</th>
                       <th className="center">품목</th>
                       <th className="center">단가</th>
                       <th className="center">공급가액</th>
@@ -202,13 +209,20 @@ function Specification(props) {
                         )}
                       </td>
                       <td className="center">{props.pointInfo.orderNo}</td>
+                      <td className="center">포인트 구매</td>
                       <td className="center">
-                        {props.pointInfo.point.toLocaleString()}
+                        {props.pointInfo.point
+                          ? props.pointInfo.point.toLocaleString()
+                          : 0}{" "}
+                        원
+                      </td>
+                      <td className="center">
+                        {props.pointInfo.point
+                          ? props.pointInfo.point.toLocaleString()
+                          : 0}{" "}
+                        원
                       </td>
                       <td className="center">-</td>
-                      <td className="center">
-                        {props.pointInfo.point.toLocaleString()}
-                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -236,11 +250,15 @@ function Specification(props) {
                       </td>
                       <td className="center">{props.pointInfo.orderNo}</td>
                       <td className="right">
-                        {props.pointInfo.point.toLocaleString()}
+                        {props.pointInfo.point
+                          ? props.pointInfo.point.toLocaleString()
+                          : 0}
                       </td>
                       <td className="center">-</td>
                       <td className="right">
-                        {props.pointInfo.point.toLocaleString()}
+                        {props.pointInfo.point
+                          ? props.pointInfo.point.toLocaleString()
+                          : 0}
                       </td>
                     </tr>
                   </tbody>
@@ -266,10 +284,14 @@ function Specification(props) {
                       </td>
                       <td className="center">{props.pointInfo.goodsName}</td>
                       <td className="right">
-                        {props.pointInfo.point.toLocaleString()}
+                        {props.pointInfo.point
+                          ? props.pointInfo.point.toLocaleString()
+                          : 0}
                       </td>
                       <td className="right">
-                        {props.pointInfo.point.toLocaleString()}
+                        {props.pointInfo.point
+                          ? props.pointInfo.point.toLocaleString()
+                          : 0}
                       </td>
                       <td className="center">-</td>
                     </tr>

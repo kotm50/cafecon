@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useLocation, /* useNavigate, */ useParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  /* useNavigate, */ useParams,
+} from "react-router-dom";
 import Modal from "../../Components/Modal";
 import dompurify from "dompurify";
 import { kyApi, getPrice, useLogout } from "../../Api/Api";
@@ -204,27 +208,39 @@ function GoodsDetail() {
                   모바일 쿠폰 발송
                 </span>
               </div>
-              <div className="mt-5 flex flex-col lg:flex-row justify-start gap-3 relative">
-                <div className="flex justify-start gap-x-2 ">
-                  <button
-                    className="w-fit transition-all duration-150 ease-in-out bg-indigo-500 text-white py-2 px-5 rounded hover:bg-indigo-700"
-                    onClick={() => {
-                      buyItSelf();
-                    }}
-                  >
-                    포인트로 구입하기
-                  </button>
-                  <button
-                    className="w-fit transition-all duration-150 ease-in-out bg-orange-600 text-white py-2 px-5 rounded hover:bg-orange-700"
-                    onClick={() => {
-                      setModalOn(true);
-                      setModalType("buy");
-                    }}
-                  >
-                    포인트로 선물하기
-                  </button>
+
+              {login.userId ? (
+                <div className="mt-5 flex flex-col lg:flex-row justify-start gap-3 relative">
+                  <div className="flex justify-start gap-x-2 ">
+                    <button
+                      className="w-fit transition-all duration-150 ease-in-out bg-indigo-500 text-white py-2 px-5 rounded hover:bg-indigo-700"
+                      onClick={() => {
+                        buyItSelf();
+                      }}
+                    >
+                      포인트로 구입하기
+                    </button>
+                    <button
+                      className="w-fit transition-all duration-150 ease-in-out bg-orange-600 text-white py-2 px-5 rounded hover:bg-orange-700"
+                      onClick={() => {
+                        setModalOn(true);
+                        setModalType("buy");
+                      }}
+                    >
+                      포인트로 선물하기
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="mt-5 flex flex-col lg:flex-row justify-start gap-3 relative">
+                  <Link
+                    to="/user/login"
+                    className="py-2 px-5 bg-gray-100 rounded hover:bg-opacity-50"
+                  >
+                    로그인 후 구매 가능합니다
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 

@@ -6,6 +6,11 @@ function UserPointModal(props) {
   const logout = useLogout();
   const [point, setPoint] = useState("");
   const pointSubmit = async logType => {
+    if (logType === "차감") {
+      if (Number(point) > props.userInfo.point) {
+        return alert("보유포인트가 부족합니다");
+      }
+    }
     const data = {
       userId: props.userInfo.userId,
       point: Number(point),
@@ -17,6 +22,7 @@ function UserPointModal(props) {
           json: data,
         })
         .json();
+      console.log(res);
       if (res.code === "C000") {
         props.getUserList();
         props.setModalOn(false);

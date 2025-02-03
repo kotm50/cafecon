@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 function Withdraw(props) {
   const getLogtype = logType => {
-    if (logType === "CP" || logType === "GI") {
+    if (logType === "CP" || logType === "GI" || logType === "AP") {
       return true;
     }
     return false;
@@ -47,7 +47,9 @@ function Withdraw(props) {
             </td>
             <td
               className={`${
-                item.logType === "CP" || item.logType === "GI"
+                item.logType === "CP" ||
+                item.logType === "GI" ||
+                item.logType === "AD"
                   ? "text-red-500"
                   : "text-green-600"
               }`}
@@ -65,7 +67,9 @@ function Withdraw(props) {
                   className="py-2 px-4 bg-gray-200 border border-gray-500 hover:bg-opacity-50"
                   onClick={() => {
                     props.setModalOn(true);
-                    props.setModalType("withdraw");
+                    props.setModalType(
+                      item.logType === "AP" ? "deposit" : "withdraw"
+                    );
                     props.setPointInfo(item);
                   }}
                 >
