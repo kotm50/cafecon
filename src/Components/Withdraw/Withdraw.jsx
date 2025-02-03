@@ -8,6 +8,13 @@ function Withdraw(props) {
     }
     return false;
   };
+
+  const chkCoupon = item => {
+    console.log(item.trId);
+    props.setModalOn(true);
+    props.setModalType(item.logType === "AP" ? "deposit" : "withdraw");
+    props.setPointInfo(item);
+  };
   return (
     <table id="pointList">
       <thead>
@@ -66,11 +73,7 @@ function Withdraw(props) {
                 <button
                   className="py-2 px-4 bg-gray-200 border border-gray-500 hover:bg-opacity-50"
                   onClick={() => {
-                    props.setModalOn(true);
-                    props.setModalType(
-                      item.logType === "AP" ? "deposit" : "withdraw"
-                    );
-                    props.setPointInfo(item);
+                    chkCoupon(item);
                   }}
                 >
                   거래명세서
