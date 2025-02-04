@@ -15,7 +15,9 @@ import PointList from "./Pages/PointList";
 import CouponList from "./Pages/CouponList/CouponList";
 import AdminMain from "./Pages/AdminMain/AdminMain";
 import AdminUserList from "./Pages/AdminUserList";
+import useHardReload from "./useHardReload";
 function App() {
+  useHardReload(); // ✅ 페이지 로드 시 강제 새로고침 실행
   return (
     <>
       <Header />
