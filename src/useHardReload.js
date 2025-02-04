@@ -22,11 +22,8 @@ const useHardReload = () => {
 
     // ✅ 환경변수가 변경되지 않았다면 새로고침 실행 X
     if (lastReloadVersion === APP_VERSION) {
-      console.log("갱신완료");
       return;
     }
-
-    console.log("갱신시작");
 
     // ✅ Firebase에서 최신 파일을 강제로 불러오기 위해 캐시 무효화
     const clearCacheAndReload = () => {

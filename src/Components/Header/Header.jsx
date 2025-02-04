@@ -106,7 +106,7 @@ function Header() {
                   className="p-2 w-fit ppbold text-4xl text-amber-900"
                   onClick={() => navi("/")}
                 >
-                  카페콘닷컴
+                  카페콘닷컴!
                 </button>
               </h1>
               <div className="w-full flex justify-between pb-4">
