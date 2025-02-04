@@ -16,6 +16,7 @@ function CouponList() {
     getCouponList(page, size);
     //eslint-disable-next-line
   }, [thisLocation]);
+
   const getCouponList = async (page, size) => {
     const data = {
       page: page,
@@ -25,6 +26,7 @@ function CouponList() {
       const res = await kyApi
         .post("/api/v1/cafecon/user/find/couponList", { json: data })
         .json();
+      console.log(res.couponList);
       setCouponList(res.couponList);
     } catch (error) {
       console.log(error);
@@ -38,7 +40,13 @@ function CouponList() {
     // 5분 차이 계산
     const fiveMin = now.diff(reg, "minute") >= 5;
     if (!fiveMin) {
-      alert("5분 이내에 취소 할 수 없습니다.");
+      alert("구매 후 5분 이내에 취소 할 수 없습니다.");
+      return;
+    }
+
+    const oneWeek = now.diff(reg, "week") >= 1;
+    if (oneWeek) {
+      alert("구매 후 1주일 경과시 취소가 불가능 합니다");
       return;
     }
     const data = {

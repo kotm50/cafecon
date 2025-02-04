@@ -39,16 +39,19 @@ function Gifticon({ setModalType, setModalOn, buyIt, user, goodsPrice }) {
   });
 
   const handlePhoneChange = (index, value) => {
+    // 숫자만 입력받도록 필터링
+    const numericValue = value.replace(/\D/g, "");
+
     if (index === 1) {
-      setPhone1({ num: value, stat: phone1.stat, memo: phone1.memo });
+      setPhone1({ num: numericValue, stat: phone1.stat, memo: phone1.memo });
     } else if (index === 2) {
-      setPhone2({ num: value, stat: phone2.stat, memo: phone2.memo });
+      setPhone2({ num: numericValue, stat: phone2.stat, memo: phone2.memo });
     } else if (index === 3) {
-      setPhone3({ num: value, stat: phone3.stat, memo: phone3.memo });
+      setPhone3({ num: numericValue, stat: phone3.stat, memo: phone3.memo });
     } else if (index === 4) {
-      setPhone4({ num: value, stat: phone4.stat, memo: phone4.memo });
+      setPhone4({ num: numericValue, stat: phone4.stat, memo: phone4.memo });
     } else if (index === 5) {
-      setPhone5({ num: value, stat: phone5.stat, memo: phone5.memo });
+      setPhone5({ num: numericValue, stat: phone5.stat, memo: phone5.memo });
     }
   };
 

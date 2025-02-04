@@ -9,10 +9,9 @@ function Withdraw(props) {
     return false;
   };
 
-  const chkCoupon = item => {
-    console.log(item.trId);
+  const chkCoupon = async item => {
     props.setModalOn(true);
-    props.setModalType(item.logType === "AP" ? "deposit" : "withdraw");
+    props.setModalType("withdraw");
     props.setPointInfo(item);
   };
   return (
@@ -100,6 +99,7 @@ Withdraw.propTypes = {
   setModalOn: PropTypes.func.isRequired,
   setModalType: PropTypes.func.isRequired,
   setPointInfo: PropTypes.func.isRequired,
+  userInfo: PropTypes.object,
 };
 
 export default Withdraw;

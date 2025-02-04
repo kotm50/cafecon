@@ -46,7 +46,7 @@ function MypageMenu() {
       </Link>
       <Link
         to="/user/couponlist"
-        className="text-center text-xs giftcategory p-2 hidden"
+        className="text-center text-xs giftcategory p-2"
       >
         <div className="bg-sky-50 rounded-full text-center w-20 h-20 mx-auto mb-2 flex flex-col justify-center">
           <img

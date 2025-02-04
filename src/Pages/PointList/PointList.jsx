@@ -77,6 +77,7 @@ function PointList() {
       if (stype) data.searchType = stype;
       if (keyword) data.searchKeyword = keyword;
     }
+    console.log(data);
     const res = await kyApi.post(url, { json: data }).json();
     console.log(res);
     setPointList(res.pointLogList);
@@ -98,6 +99,13 @@ function PointList() {
     beforeDate.setMonth(today.getMonth() - month);
     setStartDate(dayjs(beforeDate).format("YYYY-MM-DD"));
     setEndDate(dayjs(today).format("YYYY-MM-DD"));
+  };
+  const searchIt = () => {
+    if (!searchType) return alert("검색 유형을 선택하세요");
+    if (!searchKeyword) return alert("검색어를 입력하세요");
+    navi(
+      `${thisLocation.pathname}?status=withdraw&keyword=${searchKeyword}&stype=${searchType}`
+    );
   };
   return (
     <>
@@ -161,40 +169,67 @@ function PointList() {
                 12개월
               </button>
             </div>
-            <div className="flex flex-row justify-start gap-x-2">
-              <select
-                className="py-2 pl-2 pr-8 border border-[#ccc] rounded-sm"
-                value={searchType}
-                onChange={e => setSearchType(e.currentTarget.value)}
-              >
-                <option value="">검색유형</option>
-                <option value="goodsname">상품명</option>
-                <option value="orderno">주문번호</option>
-                <option value="phone">수신번호</option>
-                <option value="memo">메모</option>
-              </select>
-              <input
-                type="text"
-                className="p-2 border border-[#ccc] rounded-sm w-full"
-                value={searchKeyword}
-                onChange={e => setSearchKeyword(e.currentTarget.value)}
-                placeholder={`${
-                  !searchType ? "검색유형 선택 후 " : ""
-                }검색어를 입력하세요`}
-              />
-              <button className="bg-success hover:bg-opacity-80 text-white px-4 p-2 whitespace-nowrap">
-                검색
-              </button>
-            </div>
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                searchIt();
+              }}
+            >
+              <div className="flex flex-row justify-start gap-x-2">
+                <select
+                  className="py-2 pl-2 pr-8 border border-[#ccc] rounded-sm"
+                  value={searchType}
+                  onChange={e => setSearchType(e.currentTarget.value)}
+                >
+                  <option value="">검색유형</option>
+                  <option value="goodsname">상품명</option>
+                  <option value="orderno">주문번호</option>
+                  <option value="phone">수신번호</option>
+                  <option value="memo">메모</option>
+                </select>
+                <input
+                  type="text"
+                  className="p-2 border border-[#ccc] rounded-sm w-full"
+                  value={searchKeyword}
+                  onChange={e => setSearchKeyword(e.currentTarget.value)}
+                  placeholder={`${
+                    !searchType ? "검색유형 선택 후 " : ""
+                  }검색어를 입력하세요`}
+                />
+                <button
+                  className="bg-success hover:bg-opacity-80 text-white px-4 p-2 whitespace-nowrap"
+                  type="submit"
+                >
+                  검색
+                </button>
+              </div>
+            </form>
           </div>
         )}
-        <div className="text-xl mb-5">
-          <span className="font-extra">{userInfo.managerName}</span>님의
-          잔여포인트{" "}
-          <span className="font-extra text-blue-500">
-            {userInfo.point.toLocaleString()}
-          </span>
-          P
+        <div
+          className={`flex ${
+            status === "withdraw" ? "justify-between" : "justify-start"
+          }`}
+        >
+          <div className="text-xl mb-5">
+            <span className="font-extra">{userInfo.managerName}</span>님의
+            잔여포인트{" "}
+            <span className="font-extra text-blue-500">
+              {userInfo.point.toLocaleString()}
+            </span>
+            P
+          </div>
+          <div className="mb-5">
+            <button
+              className="py-2 px-4 bg-gray-200 border border-gray-500 hover:bg-opacity-50"
+              onClick={() => {
+                setModalOn(true);
+                setModalType("withdrawAll");
+              }}
+            >
+              기간별 거래명세서
+            </button>
+          </div>
         </div>
         {pointList &&
           pointList.length > 0 &&
@@ -204,6 +239,7 @@ function PointList() {
               setModalOn={setModalOn}
               setModalType={setModalType}
               setPointInfo={setPointInfo}
+              userInfo={userInfo}
             />
           ) : (
             <Withdraw
@@ -211,6 +247,7 @@ function PointList() {
               setModalOn={setModalOn}
               setModalType={setModalType}
               setPointInfo={setPointInfo}
+              userInfo={userInfo}
             />
           ))}
         {pointList && pointList.length > 0 ? (
@@ -226,6 +263,8 @@ function PointList() {
         modalType={modalType}
         setModalType={setModalType}
         pointInfo={pointInfo}
+        startDate={startDate}
+        endDate={endDate}
       />
       {loading && (
         <div className="bg-white bg-opacity-55 w-[100vw] h-[100vh] fixed top-0 left-0 overflow-hidden z-[9999999999]">

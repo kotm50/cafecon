@@ -109,6 +109,8 @@ function GoodsDetail() {
       .post("/api/v1/cafecon/common/goods/send", { json: data })
       .json();
 
+    console.log(res);
+
     if (res.code === "C000") {
       const point = await kyApi
         .get("/api/v1/cafecon/common/exper_cookie")
@@ -137,7 +139,9 @@ function GoodsDetail() {
       .post("/api/v1/cafecon/common/goods/send", { json: data })
       .json();
 
-    if (res.code === "0000") return "완료";
+    console.log(res);
+
+    if (res.code === "C000") return "완료";
     if (res.code === "E403") {
       logout();
       return "로그아웃";
