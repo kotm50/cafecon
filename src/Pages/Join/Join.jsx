@@ -102,7 +102,7 @@ function Join() {
       return {
         data,
         result:
-          "소속 단체(회사)명을 입력해 주세요\n지점이 있을 경우 지점명까지 입력해 주세요.",
+          "업체명 단체(회사)명을 입력해 주세요\n지점이 있을 경우 지점명까지 입력해 주세요.",
       };
     }
     if (!pwd) return { data, result: "비밀번호를 입력해 주세요" };
@@ -616,7 +616,7 @@ function Join() {
                   htmlFor="inputCName"
                   className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
                 >
-                  <div>소속</div>
+                  <div>업체명</div>
                 </label>
                 <div className="lg:col-span-4">
                   <input
@@ -631,7 +631,7 @@ function Join() {
                     onBlur={e => {
                       setCompanyName(e.currentTarget.value);
                     }}
-                    placeholder="소속한 단체 지점이 있을 경우 지점명까지."
+                    placeholder="지점이 있을 경우 지점명까지."
                     autoComplete="off"
                   />
                 </div>

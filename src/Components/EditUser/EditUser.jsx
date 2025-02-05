@@ -275,7 +275,7 @@ function EditUser(props) {
                   htmlFor="inputCName"
                   className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
                 >
-                  <div>소속</div>
+                  <div>업체명</div>
                 </label>
                 <div className="lg:col-span-4">
                   <input
@@ -290,7 +290,7 @@ function EditUser(props) {
                     onBlur={e => {
                       setCompanyName(e.currentTarget.value);
                     }}
-                    placeholder="소속한 단체 지점이 있을 경우 지점명까지."
+                    placeholder="지점이 있을 경우 지점명까지."
                     autoComplete="off"
                   />
                 </div>
