@@ -143,7 +143,7 @@ function AdminUserList() {
               <th>사업자명</th>
               <th>이메일</th>
               <th>보유포인트</th>
-              <th>포인트지급</th>
+              <th>포인트내역</th>
             </tr>
           </thead>
           <tbody>
@@ -166,7 +166,7 @@ function AdminUserList() {
                 </td>
                 <td className="center">
                   <button
-                    className="py-2 px-4 bg-gray-200 border border-gray-500 hover:bg-opacity-50"
+                    className="py-1 px-4 bg-gray-200 border border-gray-500 hover:bg-opacity-50 text-[0.8rem]"
                     onClick={() => {
                       setModalOn(true);
                       setUserInfo(user);

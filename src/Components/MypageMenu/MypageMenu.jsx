@@ -1,14 +1,20 @@
 import { Link } from "react-router-dom";
-
+import PropTypes from "prop-types";
 import list from "../../assets/mypage/list.png";
 import user from "../../assets/mypage/user.png";
 import coupon from "../../assets/mypage/coupon.png";
 import diamond from "../../assets/mypage/diamond.png";
 
-function MypageMenu() {
+function MypageMenu({ path }) {
+  console.log(path);
   return (
     <div className="container mx-auto flex flex-row flex-nowrap overflow-x-auto giftCategoryMenu gap-3">
-      <Link to="/user/mypage" className="text-center text-xs giftcategory p-2">
+      <Link
+        to="/user/mypage"
+        className={`text-center text-xs giftcategory p-2 ${
+          path === "mypage" && "bg-indigo-100 rounded-lg"
+        }`}
+      >
         <div className="bg-sky-50 rounded-full text-center w-20 h-20 mx-auto mb-2 flex flex-col justify-center">
           <img
             src={user}
@@ -20,7 +26,9 @@ function MypageMenu() {
       </Link>
       <Link
         to="/user/pointreq"
-        className="text-center text-xs giftcategory p-2"
+        className={`text-center text-xs giftcategory p-2 ${
+          path === "pointreq" && "bg-indigo-100 rounded-lg"
+        }`}
       >
         <div className="bg-sky-50 rounded-full text-center w-20 h-20 mx-auto mb-2 flex flex-col justify-center">
           <img
@@ -33,7 +41,9 @@ function MypageMenu() {
       </Link>
       <Link
         to="/user/pointlist"
-        className="text-center text-xs giftcategory p-2"
+        className={`text-center text-xs giftcategory p-2 ${
+          path === "pointlist" && "bg-indigo-100 rounded-lg"
+        }`}
       >
         <div className="bg-sky-50 rounded-full text-center w-20 h-20 mx-auto mb-2 flex flex-col justify-center">
           <img
@@ -46,7 +56,9 @@ function MypageMenu() {
       </Link>
       <Link
         to="/user/couponlist"
-        className="text-center text-xs giftcategory p-2"
+        className={`text-center text-xs giftcategory p-2 ${
+          path === "couponlist" && "bg-indigo-100 rounded-lg"
+        }`}
       >
         <div className="bg-sky-50 rounded-full text-center w-20 h-20 mx-auto mb-2 flex flex-col justify-center">
           <img
@@ -60,5 +72,9 @@ function MypageMenu() {
     </div>
   );
 }
+
+MypageMenu.propTypes = {
+  path: PropTypes.string.isRequired,
+};
 
 export default MypageMenu;

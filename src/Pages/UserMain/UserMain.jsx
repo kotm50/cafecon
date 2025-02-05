@@ -30,7 +30,7 @@ function UserMain() {
       >
         {site !== "login" && site !== "join" ? (
           <div className="mb-5 pb-5 border-b  p-4 bg-white border-gray-100">
-            <MypageMenu />
+            <MypageMenu path={thisLocation.pathname.split("/")[2]} />
           </div>
         ) : null}
         <Outlet />

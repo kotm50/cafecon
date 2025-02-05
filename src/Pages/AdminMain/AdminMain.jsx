@@ -7,6 +7,7 @@ function AdminMain() {
   const thisLocation = useLocation();
   const login = useSelector(state => state.user);
   useEffect(() => {
+    console.log(thisLocation.pathname.split("/")[1]);
     if (thisLocation.pathname === "/admin") {
       navi("/admin/userlist");
     }
@@ -22,13 +23,21 @@ function AdminMain() {
         <div className="w-full flex justify-start gap-x-2 mb-5">
           <Link
             to={"/admin/pointlist"}
-            className="p-2 text-center bg-gray-200 border border-gray-500 hover:bg-opacity-50"
+            className={`p-2 text-center  border border-gray-500 hover:bg-opacity-50 ${
+              thisLocation.pathname.split("/")[2] === "pointlist"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+            }`}
           >
             포인트내역
           </Link>
           <Link
             to={"/admin/userlist"}
-            className="p-2 text-center bg-gray-200 border border-gray-500 hover:bg-opacity-50"
+            className={`p-2 text-center  border border-gray-500 hover:bg-opacity-50 ${
+              thisLocation.pathname.split("/")[2] === "userlist"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+            }`}
           >
             회원 목록
           </Link>
