@@ -313,12 +313,14 @@ function Specification(props) {
                           </td>
                           <td className="center">{props.pointInfo.orderNo}</td>
                           <td className="right">
+                            {props.pointInfo.logType === "CE" && "- "}
                             {props.pointInfo.point
                               ? props.pointInfo.point.toLocaleString()
                               : 0}
                           </td>
                           <td className="center">-</td>
-                          <td className="right">
+                          <td className="right font-extra">
+                            {props.pointInfo.logType === "CE" && "- "}
                             {props.pointInfo.point
                               ? props.pointInfo.point.toLocaleString()
                               : 0}
@@ -329,7 +331,7 @@ function Specification(props) {
                     <table className="w-full specification">
                       <thead>
                         <tr>
-                          <th className="center">No</th>
+                          <th className="center hidden">No</th>
                           <th className="center">구매일시</th>
                           <th className="center">품목</th>
                           <th className="center">단가</th>
@@ -339,26 +341,31 @@ function Specification(props) {
                       </thead>
                       <tbody>
                         <tr>
-                          <td className="center">1</td>
+                          <td className="center hidden">1</td>
                           <td className="center">
                             {dayjs(props.pointInfo.regDate).format(
                               "YYYY-MM-DD HH:mm:ss"
                             )}
                           </td>
                           <td className="center">
-                            {props.pointInfo.goodsName}
+                            {props.pointInfo.logType === "CP"
+                              ? props.pointInfo.goodsName
+                              : "-"}
                           </td>
                           <td className="right">
                             {props.pointInfo.point
                               ? props.pointInfo.point.toLocaleString()
                               : 0}
                           </td>
-                          <td className="right">
+                          <td className="right font-extra">
+                            {props.pointInfo.logType === "CE" && "- "}
                             {props.pointInfo.point
                               ? props.pointInfo.point.toLocaleString()
                               : 0}
                           </td>
-                          <td className="center">-</td>
+                          <td className="center">
+                            {props.pointInfo.logType === "CE" ? "취소" : "-"}
+                          </td>
                         </tr>
                       </tbody>
                     </table>

@@ -1,0 +1,41 @@
+table#totalPointList, table#couponList {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border:1px solid #ccc;
+    width:100%;
+}
+
+table#totalPointList th, table#couponList th {
+ border:1px solid #ccc;
+ padding:8px;
+ font-weight:bold;
+ text-align:center;
+ vertical-align: middle;
+}
+table#totalPointList tr#total th {
+    border-bottom : 2px solid #999!important;
+}
+
+table#totalPointList td, table#couponList td {
+    border:1px solid #ccc;
+    padding:8px;
+    vertical-align: middle;
+}
+
+
+table#totalPointList th.center {
+    text-align:center;
+}
+
+table#totalPointList th.right {
+    text-align:right;
+}
+
+
+table#totalPointList td.center {
+    text-align:center;
+}
+
+table#totalPointList td.right {
+    text-align:right;
+}

@@ -2,12 +2,14 @@ import PropTypes from "prop-types";
 import dayjs from "dayjs";
 
 function Withdraw(props) {
+  /*
   const getLogtype = logType => {
     if (logType === "CP" || logType === "GI" || logType === "AP") {
       return true;
     }
     return false;
   };
+  */
 
   const chkCoupon = async item => {
     props.setModalOn(true);
@@ -68,7 +70,7 @@ function Withdraw(props) {
               {item.point ? item.point.toLocaleString() : 0}
             </td>
             <td>
-              {item.logType && getLogtype(item.logType) && (
+              {item.logType && (
                 <button
                   className="py-2 px-4 bg-gray-200 border border-gray-500 hover:bg-opacity-50"
                   onClick={() => {

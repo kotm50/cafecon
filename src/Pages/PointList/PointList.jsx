@@ -32,6 +32,7 @@ function PointList() {
   const [searchType, setSearchType] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [pointInfo, setPointInfo] = useState(null);
+
   useEffect(() => {
     if (!status) navi(`${thisLocation.pathname}?status=withdraw`);
     if (status === "withdraw") {
@@ -72,6 +73,7 @@ function PointList() {
     if (status === "deposit") {
       data.userId = userInfo.userId;
     } else {
+      data.userId = userInfo.userId;
       data.startDate = s;
       data.endDate = e;
       if (stype) data.searchType = stype;
@@ -93,6 +95,28 @@ function PointList() {
     }
   };
 
+  const handleKeyword = e => {
+    const value = e.target.value;
+
+    if (searchType === "orderNo" || searchType === "phone") {
+      if (/^\d*$/.test(value)) {
+        // 숫자만 허용
+        setSearchKeyword(value);
+      }
+    } else {
+      setSearchKeyword(value);
+    }
+  };
+
+  const handleType = e => {
+    const newType = e.target.value;
+    setSearchType(newType);
+
+    if (newType === "orderNo" || newType === "phone") {
+      setSearchKeyword(searchKeyword.replace(/\D/g, "")); // 숫자만 남기기
+    }
+  };
+
   const changeMonth = month => {
     const today = new Date();
     const beforeDate = new Date();
@@ -101,10 +125,30 @@ function PointList() {
     setEndDate(dayjs(today).format("YYYY-MM-DD"));
   };
   const searchIt = () => {
+    if (!searchType && !searchKeyword) {
+      navi(
+        `${thisLocation.pathname}?status=withdraw${
+          startDate !== start
+            ? `&start=${startDate}&end=${endDate}`
+            : endDate !== end
+            ? `&start=${startDate}&end=${endDate}`
+            : ""
+        }`
+      );
+      return true;
+    }
     if (!searchType) return alert("검색 유형을 선택하세요");
     if (!searchKeyword) return alert("검색어를 입력하세요");
     navi(
-      `${thisLocation.pathname}?status=withdraw&keyword=${searchKeyword}&stype=${searchType}`
+      `${
+        thisLocation.pathname
+      }?status=withdraw&keyword=${searchKeyword}&stype=${searchType}${
+        startDate !== start
+          ? `&start=${startDate}&end=${endDate}`
+          : endDate !== end
+          ? `&start=${startDate}&end=${endDate}`
+          : ""
+      }`
     );
   };
   return (
@@ -179,11 +223,11 @@ function PointList() {
                 <select
                   className="py-2 pl-2 pr-8 border border-[#ccc] rounded-sm"
                   value={searchType}
-                  onChange={e => setSearchType(e.currentTarget.value)}
+                  onChange={handleType}
                 >
                   <option value="">검색유형</option>
-                  <option value="goodsname">상품명</option>
-                  <option value="orderno">주문번호</option>
+                  <option value="goodsName">상품명</option>
+                  {/*<option value="orderNo">주문번호</option>*/}
                   <option value="phone">수신번호</option>
                   <option value="memo">메모</option>
                 </select>
@@ -191,7 +235,7 @@ function PointList() {
                   type="text"
                   className="p-2 border border-[#ccc] rounded-sm w-full"
                   value={searchKeyword}
-                  onChange={e => setSearchKeyword(e.currentTarget.value)}
+                  onChange={handleKeyword}
                   placeholder={`${
                     !searchType ? "검색유형 선택 후 " : ""
                   }검색어를 입력하세요`}
@@ -201,6 +245,16 @@ function PointList() {
                   type="submit"
                 >
                   검색
+                </button>
+
+                <button
+                  className="bg-white hover:bg-opacity-50 text-black border px-4 p-2 whitespace-nowrap"
+                  type="button"
+                  onClick={() =>
+                    navi(`${thisLocation.pathname}?status=withdraw`)
+                  }
+                >
+                  초기화
                 </button>
               </div>
             </form>

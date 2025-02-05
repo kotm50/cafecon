@@ -1,0 +1,51 @@
+table.couponList {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border:1px solid #ccc;
+    width:100%;
+    font-size:0.85rem;
+}
+
+table.couponList th {
+ background-color:#eaeaea;
+ border:1px solid #ccc;
+ padding:8px;
+ font-weight:bold;
+ text-align:center;
+ vertical-align: middle;
+}
+
+table.couponList th.center {
+    text-align:center;
+}
+
+table.couponList th.right {
+    text-align:right;
+}
+
+
+table.couponList td.center {
+    text-align:center;
+}
+
+table.couponList td.right {
+    text-align:right;
+}
+table.couponList td {
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:left;
+    vertical-align: middle;
+}
+
+div.couponList {
+    font-size:0.85rem;
+}
+
+
+div.couponList li {
+    list-style:disc;
+    margin-left:1rem;
+    margin-top:10px;
+    font-size:0.85rem;
+}

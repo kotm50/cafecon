@@ -135,3 +135,7 @@ div::-webkit-scrollbar-button {
 .font-light {
   font-family: "NanumSquareNeoLight" !important;
 }
+
+tr:nth-of-type(even) > td {
+  background-color: #f0f8ff!important;
+}

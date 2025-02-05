@@ -19,6 +19,8 @@ function Pagenation(props) {
   const status = parsed.status || null;
   const keyword = parsed.keyword || null;
   const searchtype = parsed.searchtype || null;
+  const start = parsed.start || "";
+  const end = parsed.end || "";
 
   useEffect(() => {
     getUrls(page, props.last);
@@ -146,6 +148,12 @@ function Pagenation(props) {
     }
     if (searchtype) {
       formattedUrl = formattedUrl + `&searchtype=${searchtype}`;
+    }
+    if (start) {
+      formattedUrl = formattedUrl + `&start=${start}`;
+    }
+    if (end) {
+      formattedUrl = formattedUrl + `&end=${end}`;
     }
     return formattedUrl;
   };
