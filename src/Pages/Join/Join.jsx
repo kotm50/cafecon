@@ -13,6 +13,7 @@ function Join() {
   const [submitNow, setSubmitNow] = useState(false);
   const [id, setId] = useState("");
   const [managerName, setManagerName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [ownerName, setOwnerName] = useState("");
   const [pwd, setPwd] = useState("");
   const [pwdChk, setPwdChk] = useState("");
@@ -97,6 +98,13 @@ function Join() {
     if (!correctId) return { data, result: "아이디 양식이 잘못되었습니다" };
     if (!dupId) return { data, result: "사용중인 아이디 입니다" };
     if (!managerName) return { data, result: "이름을 입력해 주세요" };
+    if (!companyName) {
+      return {
+        data,
+        result:
+          "소속 단체(회사)명을 입력해 주세요\n지점이 있을 경우 지점명까지 입력해 주세요.",
+      };
+    }
     if (!pwd) return { data, result: "비밀번호를 입력해 주세요" };
     if (!correctPwd) return { data, result: "비밀번호 양식이 잘못되었습니다" };
     if (!pwdChk) return { data, result: "비밀번호를 한번 더 입력해 주세요" };
@@ -117,7 +125,7 @@ function Join() {
     data.managerName = managerName;
     data.userPwd = pwd;
     data.phone = phone;
-
+    data.companyName = companyName;
     data.businessAddress = businessAddress;
     //data.birth = birth;
     //data.gender = gender;
@@ -595,6 +603,35 @@ function Join() {
                       setManagerName(e.currentTarget.value);
                     }}
                     placeholder="이름을 입력하세요"
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+
+              <div
+                id="companyName"
+                className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border`}
+              >
+                <label
+                  htmlFor="inputCName"
+                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+                >
+                  <div>소속</div>
+                </label>
+                <div className="lg:col-span-4">
+                  <input
+                    type="text"
+                    id="inputCName"
+                    autoCapitalize="none"
+                    className={`border lg:border-0 p-2 w-full text-sm`}
+                    value={companyName}
+                    onChange={e => {
+                      setCompanyName(e.currentTarget.value);
+                    }}
+                    onBlur={e => {
+                      setCompanyName(e.currentTarget.value);
+                    }}
+                    placeholder="소속한 단체 지점이 있을 경우 지점명까지."
                     autoComplete="off"
                   />
                 </div>

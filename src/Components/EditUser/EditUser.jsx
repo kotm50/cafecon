@@ -17,6 +17,7 @@ function EditUser(props) {
   const [beforeFile, setBeforeFile] = useState(null);
   const [id, setId] = useState("");
   const [managerName, setManagerName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [ownerName, setOwnerName] = useState("");
   const [fileName, setFileName] = useState("");
   const [businessAddress, setBusinessAddress] =
@@ -79,6 +80,7 @@ function EditUser(props) {
     setBeforeData(res.user);
     setId(res.user.userId || "");
     setManagerName(res.user.managerName || "");
+    setCompanyName(res.user.companyName || "");
     setPhone(res.user.phone || "");
     setOwnerName(res.user.ownerName || "");
     setBusinessStatus(res.user.businessStatus || "");
@@ -120,6 +122,7 @@ function EditUser(props) {
 
   const chkData = async () => {
     const data = {};
+    if (beforeData.companyName !== companyName) data.companyName = companyName;
     if (phone !== beforeData.phone && phoneCertChk) data.phone = phone;
     if (beforeData.businessName !== businessName)
       data.businessName = businessName;
@@ -261,6 +264,35 @@ function EditUser(props) {
                 </div>
                 <div className="lg:col-span-4">
                   <div className="p-2 text-sm">{managerName || "　"}</div>
+                </div>
+              </div>
+
+              <div
+                id="companyName"
+                className={`grid grid-cols-1 lg:grid-cols-5 lg:divide-x lg:border`}
+              >
+                <label
+                  htmlFor="inputCName"
+                  className="text-sm text-left lg:text-right flex flex-col justify-center mb-2 lg:mb-0 lg:pr-2 lg:bg-gray-100"
+                >
+                  <div>소속</div>
+                </label>
+                <div className="lg:col-span-4">
+                  <input
+                    type="text"
+                    id="inputCName"
+                    autoCapitalize="none"
+                    className={`border lg:border-0 p-2 w-full text-sm`}
+                    value={companyName}
+                    onChange={e => {
+                      setCompanyName(e.currentTarget.value);
+                    }}
+                    onBlur={e => {
+                      setCompanyName(e.currentTarget.value);
+                    }}
+                    placeholder="소속한 단체 지점이 있을 경우 지점명까지."
+                    autoComplete="off"
+                  />
                 </div>
               </div>
               <div

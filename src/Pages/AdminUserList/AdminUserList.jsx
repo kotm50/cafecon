@@ -99,6 +99,7 @@ function AdminUserList() {
             <option value="">검색유형</option>
             <option value="userId">아이디</option>
             <option value="managerName">담당자</option>
+            <option value="companyName">업체명</option>
             <option value="phone">연락처</option>
             <option value="businessNo">사업자번호</option>
             <option value="businessName">사업자명</option>
@@ -133,9 +134,10 @@ function AdminUserList() {
         <table id="userList">
           <thead>
             <tr>
-              <th className="hidden">가입일시</th>
+              <th>가입일시</th>
               <th>아이디</th>
               <th>이름</th>
+              <th>업체</th>
               <th>연락처</th>
               <th>사업자번호</th>
               <th>사업자명</th>
@@ -149,11 +151,12 @@ function AdminUserList() {
               <tr key={idx}>
                 <td className="hidden">
                   {user.regDate
-                    ? dayjs(user.regDate).format("YYYY-MM-DD HH:mm")
+                    ? dayjs(user.createdAt).format("YYYY-MM-DD HH:mm")
                     : ""}
                 </td>
                 <td className="center">{user.userId || ""}</td>
                 <td className="center">{user.managerName || ""}</td>
+                <td className="center">{user.companyName || ""}</td>
                 <td className="center">{user.phone || ""}</td>
                 <td className="center">{user.businessNo || ""}</td>
                 <td className="center">{user.businessName || ""}</td>

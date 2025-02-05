@@ -180,6 +180,7 @@ function CouponList() {
                       <button
                         className="w-full py-1 px-2 bg-green-200 border border-green-500 hover:bg-opacity-50"
                         onClick={() => resendCoupon(coupon)}
+                        disabled={!coupon.resendCnt}
                       >
                         재발송
                       </button>
