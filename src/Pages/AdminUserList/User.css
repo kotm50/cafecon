@@ -18,6 +18,7 @@ table#userList td, table#couponList td {
     border:1px solid #ccc;
     padding:8px;
     vertical-align: middle;
+    font-size:0.8rem;
 }
 
 
