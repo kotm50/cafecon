@@ -149,7 +149,7 @@ function AdminUserList() {
           <tbody>
             {userList.map((user, idx) => (
               <tr key={idx}>
-                <td className="hidden">
+                <td className="center">
                   {user.regDate
                     ? dayjs(user.createdAt).format("YYYY-MM-DD HH:mm")
                     : ""}
