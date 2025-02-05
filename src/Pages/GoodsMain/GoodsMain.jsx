@@ -13,7 +13,7 @@ function GoodsMain() {
   return (
     <div className="w-full max-w-[1240px] mx-auto bg-white p-4 min-h-[calc(100vh-119px)]">
       <div className="mb-5 pb-5 border-b border-gray-100">
-        <MainCategory />
+        <MainCategory path={thisLocation.pathname.split("/")} />
       </div>
       <Outlet />
     </div>

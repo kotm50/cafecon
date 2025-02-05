@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 import { category } from "../../Data/Category";
 import all from "../../assets/mainCategory/all.png";
 import MainCategoryImg from "../MainCategoryImg";
 
-function MainCategory() {
+function MainCategory({ path }) {
+  console.log(path[3]);
   return (
     <div className="lg:w-full mx-auto">
       <div
@@ -12,7 +14,9 @@ function MainCategory() {
       >
         <Link
           to={`/goods/list`}
-          className="text-center text-xs giftcategory p-2"
+          className={`text-center text-xs giftcategory p-2 ${
+            path.length === 3 && "bg-indigo-100 rounded-lg"
+          }`}
         >
           <div className="mainCategory group">
             <div className="bg-sky-50 rounded-full text-center w-20 h-20 mx-auto mb-2 flex flex-col justify-center">
@@ -31,6 +35,8 @@ function MainCategory() {
             key={idx}
             className={`text-center text-xs giftcategory p-2 ${
               cat.category1Seq === "etc" && "hidden"
+            } ${
+              Number(path[3]) === cat.category1Seq && "bg-indigo-100 rounded-lg"
             }`}
           >
             <div className="mainCategory group">
@@ -51,4 +57,7 @@ function MainCategory() {
   );
 }
 
+MainCategory.propTypes = {
+  path: PropTypes.string.isRequired,
+};
 export default MainCategory;
