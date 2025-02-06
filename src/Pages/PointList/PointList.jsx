@@ -153,7 +153,27 @@ function PointList() {
   };
   return (
     <>
-      <div className="w-full bg-white p-5">
+      <div className="lg:hidden w-full h-[200px] relative">
+        <div className="absolute w-full top-1/2 -translate-y-1/2 text-center">
+          모바일 페이지 준비중 입니다 <br />
+          PC에서 접속해주세요
+          <br />
+          <br />
+          <button
+            className="text-indigo-600 border-b border-indigo-600 mr-4"
+            onClick={() => navi(-1)}
+          >
+            이전으로
+          </button>
+          <button
+            className="text-indigo-600 border-b border-indigo-600 ml-4"
+            onClick={() => navi("/")}
+          >
+            메인으로
+          </button>
+        </div>
+      </div>
+      <div className="w-full bg-white p-5 hidden lg:block">
         <div className="flex justify-start gap-x-0 mb-5 pb-0 border-b">
           <Link
             to={`${thisLocation.pathname}?status=deposit`}

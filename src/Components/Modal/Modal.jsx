@@ -4,13 +4,14 @@ import Gifticon from "../Gifticon";
 import EditPwd from "../EditPwd/EditPwd";
 import Specification from "../Specification/Specification";
 import UserPointModal from "../UserPointModal";
+import MobileLoginModal from "../MobileLoginModal";
 
 function Modal(props) {
   return (
     <>
       {props.modalOn ? (
         <>
-          <div className="fixed top-1/2 left-1/2 min-w-[600px] min-h-[100px] -translate-x-1/2 -translate-y-1/2 p-2 z-[2000] bg-white rounded-lg">
+          <div className="fixed top-1/2 left-1/2 w-[90%] lg:w-fit lg:min-w-[600px] min-h-[100px] -translate-x-1/2 -translate-y-1/2 p-2 z-[2000] bg-white rounded-lg">
             {props.modalType === "buy" ? (
               <Gifticon
                 setModalOn={props.setModalOn}
@@ -52,6 +53,12 @@ function Modal(props) {
                 userInfo={props.userInfo}
                 getUserList={props.getUserList}
               />
+            ) : props.modalType === "login" ? (
+              <MobileLoginModal
+                setModalOn={props.setModalOn}
+                setModalType={props.setModalType}
+                headType={props.headType}
+              />
             ) : null}
           </div>
           <div
@@ -81,6 +88,7 @@ Modal.propTypes = {
   pointInfo: PropTypes.object,
   userInfo: PropTypes.object,
   getUserList: PropTypes.func,
+  headType: PropTypes.string,
 };
 
 export default Modal;

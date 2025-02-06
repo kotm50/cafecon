@@ -159,11 +159,11 @@ function Pagenation(props) {
   };
   return (
     <>
-      <div className="w-full mx-auto flex justify-between  mt-4">
-        <div>
+      <div className="w-full mx-auto flex justify-between mt-4 gap-y-2 text-xs lg:text-base">
+        <div className="w-fit">
           <select
             value={size}
-            className="p-2 bg-white border"
+            className="p-2 bg-white border hidden lg:block"
             onChange={handleSizeChange}
           >
             <option value="20">20개씩 보기</option>
@@ -176,7 +176,7 @@ function Pagenation(props) {
             <Link
               to={first}
               title="처음으로"
-              className="p-2 bg-white border rounded-sm hover:bg-gray-100"
+              className="p-2 bg-white border rounded-sm hover:bg-gray-100 hidden lg:block"
             >
               처음으로
             </Link>
@@ -237,7 +237,7 @@ function Pagenation(props) {
             <Link
               to={last}
               title="마지막 페이지로"
-              className="p-2 bg-white border rounded-sm hover:bg-gray-100"
+              className="p-2 bg-white border rounded-sm hover:bg-gray-100 hidden lg:block"
             >
               마지막으로
             </Link>

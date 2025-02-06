@@ -6,6 +6,7 @@ import SearchArea from "../SearchArea";
 import Modal from "../Modal";
 import { kyApi, useLogout } from "../../Api/Api";
 import { loginUser } from "../../Reducer/userSlice";
+import { FaUser } from "react-icons/fa";
 
 function Header() {
   const logout = useLogout();
@@ -100,7 +101,7 @@ function Header() {
       {headType && (
         <>
           <header className="w-full border-b bg-white">
-            <div className="w-full max-w-[1240px] mx-auto">
+            <div className="w-full max-w-[1240px] mx-auto relative">
               <h1 className="text-center">
                 <button
                   className="p-2 w-fit ppbold text-4xl text-amber-900"
@@ -109,6 +110,17 @@ function Header() {
                   카페콘닷컴
                 </button>
               </h1>
+              <div className="absolute top-2 right-2 lg:hidden">
+                <button
+                  className="p-2 rounded-full bg-gray-100 border"
+                  onClick={() => {
+                    setModalOn(true);
+                    setModalType("login");
+                  }}
+                >
+                  <FaUser size={20} />
+                </button>
+              </div>
               <div className="w-full flex flex-col lg:flex-row gap-y-4 lg:justify-between pb-4">
                 <SearchArea />
 
@@ -293,7 +305,6 @@ function Header() {
           <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-60 z-[998]"></div>
         </>
       )}
-
       <Modal
         modalOn={modalOn}
         setModalOn={setModalOn}
@@ -301,6 +312,7 @@ function Header() {
         setModalType={setModalType}
         extendLogin={extendLogin}
         getLimitandPoint={getLimitandPoint}
+        headType={headType}
       />
     </>
   );

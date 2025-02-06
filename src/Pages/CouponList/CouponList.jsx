@@ -1,7 +1,7 @@
 import queryString from "query-string";
 import "./Coupon.css";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { kyApi } from "../../Api/Api";
 import Sorry from "../../Components/Sorry";
 import dayjs from "dayjs";
@@ -9,6 +9,7 @@ import Pagenation from "../../Components/Pagenation";
 import { useSelector } from "react-redux";
 
 function CouponList() {
+  const navi = useNavigate();
   const login = useSelector(state => state.user);
   const thisLocation = useLocation();
   const parsed = queryString.parse(thisLocation.search);
@@ -116,7 +117,27 @@ function CouponList() {
   };
   return (
     <>
-      <div className="w-full bg-white p-5">
+      <div className="lg:hidden w-full h-[200px] relative">
+        <div className="absolute w-full top-1/2 -translate-y-1/2 text-center">
+          모바일 페이지 준비중 입니다 <br />
+          PC에서 접속해주세요
+          <br />
+          <br />
+          <button
+            className="text-indigo-600 border-b border-indigo-600 mr-4"
+            onClick={() => navi(-1)}
+          >
+            이전으로
+          </button>
+          <button
+            className="text-indigo-600 border-b border-indigo-600 ml-4"
+            onClick={() => navi("/")}
+          >
+            메인으로
+          </button>
+        </div>
+      </div>
+      <div className="hidden lg:block w-full bg-white p-5">
         {couponList && couponList.length > 0 ? (
           <>
             <table className="couponList">
@@ -204,7 +225,7 @@ function CouponList() {
       </div>
 
       {couponList && couponList.length > 0 ? (
-        <div className="my-10">
+        <div className="my-10 hidden lg:block">
           <Pagenation last={last} />
         </div>
       ) : null}
