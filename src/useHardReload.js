@@ -9,6 +9,16 @@ const useHardReload = () => {
     const lastReloadVersion = localStorage.getItem("lastReloadVersion");
     const url = new URL(window.location.href);
 
+    const hostname = window.location.hostname;
+
+    // ✅ localhost 또는 IP 주소라면 실행하지 않음
+    const isIPorLocalhost = /^localhost$|^\d{1,3}(\.\d{1,3}){3}$/.test(
+      hostname
+    );
+    if (isIPorLocalhost) {
+      return; // 🚫 강제 새로고침 실행 안 함
+    }
+
     // ✅ 만약 URL에 `_reload`가 있으면 제거하고 원래 URL로 변경
     if (url.searchParams.has("_reload")) {
       url.searchParams.delete("_reload");

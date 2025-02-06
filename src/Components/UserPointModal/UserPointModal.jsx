@@ -18,7 +18,8 @@ function UserPointModal(props) {
 
   useEffect(() => {
     setPointList([]);
-    getPointList(status, listCount, true);
+    setListCount(1);
+    getPointList(status, 1, true);
     //eslint-disable-next-line
   }, [status]);
 

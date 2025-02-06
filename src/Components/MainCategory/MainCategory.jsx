@@ -5,9 +5,8 @@ import all from "../../assets/mainCategory/all.png";
 import MainCategoryImg from "../MainCategoryImg";
 
 function MainCategory({ path }) {
-  console.log(path[3]);
   return (
-    <div className="lg:w-full mx-auto">
+    <div className="lg:w-full mx-auto pt-3 lg:pt-0">
       <div
         id="touch-target"
         className="container mx-auto flex flex-row flex-nowrap overflow-x-auto giftCategoryMenu gap-3 lg:grid lg:grid-cols-10"
@@ -58,6 +57,6 @@ function MainCategory({ path }) {
 }
 
 MainCategory.propTypes = {
-  path: PropTypes.string.isRequired,
+  path: PropTypes.array.isRequired,
 };
 export default MainCategory;

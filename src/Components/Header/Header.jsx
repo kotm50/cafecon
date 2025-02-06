@@ -109,11 +109,11 @@ function Header() {
                   카페콘닷컴
                 </button>
               </h1>
-              <div className="w-full flex justify-between pb-4">
+              <div className="w-full flex flex-col lg:flex-row gap-y-4 lg:justify-between pb-4">
                 <SearchArea />
 
                 {headType === "goods" ? (
-                  <div className="flex justify-end gap-x-2">
+                  <div className="hidden lg:flex justify-end gap-x-2">
                     {login.userId ? (
                       <>
                         <div className="p-2 flex justify-start gap-x-2">
@@ -168,7 +168,7 @@ function Header() {
                     )}
                   </div>
                 ) : headType === "user" ? (
-                  <div className="flex justify-end gap-x-2 pb-2">
+                  <div className="hidden lg:flex justify-end gap-x-2 pb-2">
                     {login.userId ? (
                       <>
                         <div className="p-2 flex justify-start gap-x-2">
@@ -223,7 +223,7 @@ function Header() {
                     )}
                   </div>
                 ) : headType === "admin" ? (
-                  <div className="flex justify-end gap-x-2 pb-2">
+                  <div className="hidden lg:flex justify-end gap-x-2 pb-2">
                     {login.userId ? (
                       <>
                         <div className="p-2 flex justify-start gap-x-2">
