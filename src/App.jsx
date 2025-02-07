@@ -17,6 +17,7 @@ import AdminMain from "./Pages/AdminMain/AdminMain";
 import AdminUserList from "./Pages/AdminUserList";
 import AdminPointList from "./Pages/AdminPointList";
 import useHardReload from "./useHardReload";
+import FindUser from "./Pages/FindUser";
 function App() {
   useHardReload(); // ✅ 페이지 로드 시 강제 새로고침 실행
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/user" element={<UserMain />}>
           <Route path="login" element={<Login />} />
           <Route path="join" element={<Join />} />
+          <Route path="find" element={<FindUser />} />
           <Route path="mypage" element={<Mypage />} />
           <Route path="pointreq" element={<PointRequest />} />
           <Route path="pointlist" element={<PointList />} />

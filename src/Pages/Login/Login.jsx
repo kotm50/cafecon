@@ -5,12 +5,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { kyApi } from "../../Api/Api";
 import { clearUser, loginUser } from "../../Reducer/userSlice";
 import dayjs from "dayjs";
+import queryString from "query-string";
 
 function Login() {
   const dispatch = useDispatch();
   const navi = useNavigate();
   const login = useSelector(state => state.user);
   const thisLocation = useLocation();
+  const parsed = queryString.parse(thisLocation.search);
+  const route = parsed.route || "";
   const inputIdRef = useRef();
   const inputPwdRef = useRef();
   const [userId, setUserId] = useState("");
@@ -47,8 +50,14 @@ function Login() {
   };
 
   useEffect(() => {
-    if (login.userId) navi(-1);
-  }, [thisLocation, login, navi]);
+    if (login.userId) {
+      if (route === "main") {
+        navi("/");
+      } else {
+        navi(-1);
+      }
+    }
+  }, [thisLocation, login, navi, route]);
 
   return (
     <>
@@ -153,9 +162,8 @@ function Login() {
                   <div className="text-center text-sm text-gray-500 hover:text-rose-500">
                     <button
                       type="button"
-                      onClick={() =>
-                        alert("계정정보는 고객센터로 문의해 주세요")
-                      }
+                      onClick={() => navi("/user/find?check=id")}
+                      disabled
                     >
                       아이디 찾기
                     </button>
@@ -164,9 +172,8 @@ function Login() {
                   <div className="text-center text-sm text-gray-500 hover:text-rose-500">
                     <button
                       type="button"
-                      onClick={() =>
-                        alert("계정정보는 고객센터로 문의해 주세요")
-                      }
+                      onClick={() => navi("/user/find?check=pw")}
+                      disabled
                     >
                       비밀번호 찾기
                     </button>

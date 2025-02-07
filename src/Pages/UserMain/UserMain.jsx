@@ -23,12 +23,12 @@ function UserMain() {
       </Helmet>
       <div
         className={`${
-          site === "login" || site === "join"
+          site === "login" || site === "join" || site === "find"
             ? ""
             : "w-full max-w-[1240px] mx-auto min-h-[calc(100vh-121px)]"
         }`}
       >
-        {site !== "login" && site !== "join" ? (
+        {site !== "login" && site !== "join" && site !== "find" ? (
           <div className="mb-5 pb-5 border-b  p-4 bg-white border-gray-100">
             <MypageMenu path={thisLocation.pathname.split("/")[2]} />
           </div>

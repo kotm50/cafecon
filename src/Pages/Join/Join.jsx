@@ -86,7 +86,7 @@ function Join() {
       return alert(res.message);
     } else {
       alert("회원가입이 완료되었습니다");
-      navi("/user/login");
+      navi("/user/login?route=main");
     }
     setSubmitNow(false);
   };
@@ -122,7 +122,8 @@ function Join() {
     if (!businessStatus) return { data, result: "업태를 입력해 주세요" };
     if (!businessSector) return { data, result: "업종을 입력해 주세요" };
     if (!businessEmail) return { data, result: "이메일을 입력해 주세요" };
-    if (!companyFile) return { data, result: "사업자등록증을 업로드해 주세요" };
+    if (!companyFile)
+      return { data, result: "사업자등록증을 업로드 해 주세요" };
     data.userId = id;
     data.managerName = managerName;
     data.userPwd = pwd;
@@ -135,13 +136,17 @@ function Join() {
     data.agreePrivacy = "Y";
     data.agreeMarketing = marketingAgree ? "Y" : "N";
 
-    if (businessName) data.businessName = businessName;
-    if (businessNo) data.businessNo = businessNo;
-    if (businessEmail) data.businessEmail = businessEmail;
-    if (companyFile)
-      data.businessLicense = await uploadFile(companyFile, "company");
-    if (fileName) data.businessLicenseName = fileName;
-    data.point = 1000;
+    data.businessName = businessName;
+    data.businessNo = businessNo;
+    data.businessEmail = businessEmail;
+    data.businessLicense = await uploadFile(companyFile, "company");
+
+    data.businessStatus = businessStatus;
+    data.businessSector = businessSector;
+    data.ownerName = ownerName || managerName;
+
+    data.businessLicenseName = fileName;
+    //data.point = 1000;
     return { data, result: "완료" };
   };
 
@@ -260,6 +265,11 @@ function Join() {
     }
     setPhoneCertChk(false);
     setPhoneCert("");
+    const dup = await checkDupPhone(phone);
+    if (!dup)
+      return alert(
+        "이미 가입한 연락처 입니다. 다른 번호를 입력해 주세요\n가입한 연락처가 아닐 경우 고객센터에 연락해 주세요"
+      );
     const res = await smsAuth(managerName, phone);
     if (res.code === "C000") {
       setPhoneChk(true);
@@ -267,6 +277,21 @@ function Join() {
       return alert(
         "인증번호 발송 실패. 이름과 휴대폰 번호를 확인해 주세요\n같은 현상이 반복되면 고객센터 1644-4223 으로 문의해 주세요"
       );
+    }
+  };
+
+  const checkDupPhone = async phone => {
+    const data = {
+      phone,
+    };
+
+    const res = await kyApi
+      .post("/api/v1/cafecon/user/dupCheck/phone", { json: data })
+      .json();
+    if (res === "C000") {
+      return true;
+    } else {
+      return false;
     }
   };
 

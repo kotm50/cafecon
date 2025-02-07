@@ -83,7 +83,11 @@ function Header() {
   };
 
   const getHeadType = p => {
-    if (p.split("/")[2] === "join" || p.split("/")[2] === "login") {
+    if (
+      p.split("/")[2] === "join" ||
+      p.split("/")[2] === "login" ||
+      p.split("/")[2] === "find"
+    ) {
       setHeadType("");
     } else {
       const path = p.split("/")[1];
