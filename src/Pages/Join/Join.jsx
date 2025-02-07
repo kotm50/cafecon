@@ -315,6 +315,15 @@ function Join() {
     }
   };
 
+  const handlePhoneNo = e => {
+    const inputValue = e.target.value;
+
+    // 숫자만 허용 (정규식 사용)
+    if (/^\d*$/.test(inputValue)) {
+      setPhone(inputValue); // 숫자만 입력 가능
+    }
+  };
+
   const chkBusinessNo = e => {
     const value = e.target.value;
     if (value.length === 10) {
@@ -674,15 +683,14 @@ function Join() {
                   <div>휴대폰</div>
                 </label>
                 <div className="lg:col-span-4 grid grid-cols-3 gap-1">
-                  <div className="col-span-2" title={businessAddress}>
+                  <div className="col-span-2">
                     <input
                       type="text"
                       id="inputPhone"
                       className={`border lg:border-0 p-2 w-full text-sm`}
                       value={phone}
                       placeholder="'-' 없이 11자리 숫자만 입력해 주세요"
-                      onChange={e => setPhone(e.currentTarget.value)}
-                      onBlur={e => setPhone(e.currentTarget.value)}
+                      onChange={handlePhoneNo}
                     />
                   </div>
                   <div>

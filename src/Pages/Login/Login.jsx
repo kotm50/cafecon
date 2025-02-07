@@ -57,7 +57,8 @@ function Login() {
         navi(-1);
       }
     }
-  }, [thisLocation, login, navi, route]);
+    //eslint-disable-next-line
+  }, [thisLocation, login, route]);
 
   return (
     <>
@@ -163,7 +164,6 @@ function Login() {
                     <button
                       type="button"
                       onClick={() => navi("/user/find?check=id")}
-                      disabled
                     >
                       아이디 찾기
                     </button>
@@ -173,7 +173,6 @@ function Login() {
                     <button
                       type="button"
                       onClick={() => navi("/user/find?check=pw")}
-                      disabled
                     >
                       비밀번호 찾기
                     </button>

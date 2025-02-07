@@ -1,12 +1,13 @@
 import { kyApi } from "./Api";
 
 // 휴대폰 인증
-export const smsAuth = async (name, phone) => {
+export const smsAuth = async (name, phone, id) => {
   const data = {
     managerName: name,
     phone: phone,
     site: "카페콘",
   };
+  if (id) data.userId = id;
   console.log(data);
   const res = await kyApi
     .post("/api/v1/cafecon/user/cert/sms", { json: data })
