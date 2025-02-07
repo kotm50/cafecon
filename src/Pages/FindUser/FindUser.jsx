@@ -51,7 +51,7 @@ function FindUser() {
       url = "/api/v1/cafecon/user/find/pwd/before/cert";
     }
     const res = await kyApi.post(url, { json: data }).json();
-    console.log(res);
+
     if (res.code !== "C000") {
       setErrMessage(res.message);
       setIsErr(true);
@@ -194,7 +194,7 @@ function FindUser() {
     const res = await kyApi
       .put("/api/v1/cafecon/user/reset/pwd", { json: data })
       .json();
-    console.log(res);
+
     if (res.code === "C000") {
       alert("비밀번호가 변경되었습니다\n로그인 해주세요");
       navi("/user/login");
@@ -490,6 +490,13 @@ function FindUser() {
               )}
             </>
           )}
+
+          <button
+            className="text-sm mt-3 text-indigo-500 hover:text-indigo-700 hover:font-bold"
+            onClick={() => navi("/")}
+          >
+            메인으로
+          </button>
         </div>
       )}
     </>

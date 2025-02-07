@@ -78,8 +78,6 @@ function Join() {
         json: data,
       })
       .json();
-    console.log("입력내용", data);
-    console.log("결과", res);
     if (res.code !== "C000") {
       if (data.businessLicense)
         await deleteFile(data.businessLicense, "company");

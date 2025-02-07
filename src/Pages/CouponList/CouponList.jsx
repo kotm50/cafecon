@@ -19,7 +19,6 @@ function CouponList() {
   const [couponList, setCouponList] = useState([]);
   const [errMsg, setErrMsg] = useState("조회 된 내용이 없습니다");
   useEffect(() => {
-    console.log(login);
     getCouponList(page, size);
     //eslint-disable-next-line
   }, [thisLocation]);
@@ -34,7 +33,7 @@ function CouponList() {
       const res = await kyApi
         .post("/api/v1/cafecon/user/find/couponList", { json: data })
         .json();
-      console.log(res);
+
       setCouponList(res.couponList);
       setLast(res.totalPages);
     } catch (error) {
