@@ -55,6 +55,16 @@ function AdminMain() {
           >
             회원 목록
           </Link>
+          <Link
+            to={"/admin/goodsList"}
+            className={`p-2 text-center  border border-gray-500 hover:bg-opacity-50 ${
+              thisLocation.pathname.split("/")[2] === "userlist"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+            }`}
+          >
+            상품목록
+          </Link>
         </div>
         <Outlet />
       </div>

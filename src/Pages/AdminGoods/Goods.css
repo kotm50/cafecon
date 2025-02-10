@@ -1,0 +1,40 @@
+table#goods, table#couponList {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border:1px solid #ccc;
+    width:100%;
+}
+
+table#goods th, table#couponList th {
+ background-color:#eaeaea;
+ border:1px solid #ccc;
+ padding:8px;
+ font-weight:bold;
+ text-align:center;
+ vertical-align: middle;
+}
+
+table#goods td, table#couponList td {
+    border:1px solid #ccc;
+    padding:8px;
+    vertical-align: middle;
+    font-size:0.8rem;
+}
+
+
+table#goods th.center {
+    text-align:center;
+}
+
+table#goods th.right {
+    text-align:right;
+}
+
+
+table#goods td.center {
+    text-align:center;
+}
+
+table#goods td.right {
+    text-align:right;
+}

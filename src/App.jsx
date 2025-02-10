@@ -18,6 +18,7 @@ import AdminUserList from "./Pages/AdminUserList";
 import AdminPointList from "./Pages/AdminPointList";
 import useHardReload from "./useHardReload";
 import FindUser from "./Pages/FindUser";
+import AdminGoods from "./Pages/AdminGoods";
 function App() {
   useHardReload(); // ✅ 페이지 로드 시 강제 새로고침 실행
   return (
@@ -41,6 +42,7 @@ function App() {
         <Route path="/admin" element={<AdminMain />}>
           <Route path="userlist" element={<AdminUserList />} />
           <Route path="pointlist" element={<AdminPointList />} />
+          <Route path="goodsList" element={<AdminGoods />} />
         </Route>
       </Routes>
       <ToTop />
