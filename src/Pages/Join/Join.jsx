@@ -246,6 +246,8 @@ function Join() {
   };
 
   const getCert = async () => {
+    const chk = await chkPhoneNum(phone);
+    if (!chk) return alert("잘못된 양식입니다. 다시 시도해 주세요");
     if (!id) {
       return alert("아이디를 입력해 주세요");
     }
@@ -264,10 +266,7 @@ function Join() {
     setPhoneCertChk(false);
     setPhoneCert("");
     const dup = await checkDupPhone(phone);
-    if (!dup)
-      return alert(
-        "이미 가입한 연락처 입니다. 다른 번호를 입력해 주세요\n가입한 연락처가 아닐 경우 고객센터에 연락해 주세요"
-      );
+    if (!dup === "성공") return alert(dup);
     const res = await smsAuth(managerName, phone);
     if (res.code === "C000") {
       setPhoneChk(true);
@@ -279,19 +278,16 @@ function Join() {
   };
 
   const checkDupPhone = async phone => {
-    const chk = await chkPhoneNum(phone);
-    if (!chk) return alert("잘못된 양식입니다. 다시 시도해 주세요");
     const data = {
       phone,
     };
-
     const res = await kyApi
       .post("/api/v1/cafecon/user/dupCheck/phone", { json: data })
       .json();
     if (res === "C000") {
-      return true;
+      return "성공";
     } else {
-      return false;
+      return res.message;
     }
   };
 
