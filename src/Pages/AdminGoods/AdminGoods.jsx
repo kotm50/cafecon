@@ -1,14 +1,37 @@
 import { useState, useEffect } from "react";
 import "./Goods.css";
 import { kyApi } from "../../Api/Api";
+import { FaSortNumericDown, FaSortNumericUp } from "react-icons/fa";
 
 function AdminGoods() {
   const [loading, setLoading] = useState();
   const [goods, setGoods] = useState([]);
+  const [isAscending, setIsAscending] = useState(true);
 
   useEffect(() => {
     getGoods();
   }, []);
+
+  useEffect(() => {
+    if (goods.length > 0) {
+      sortGoods();
+    }
+    //eslint-disable-next-line
+  }, [isAscending]);
+
+  const sortGoods = () => {
+    let list = goods;
+    setGoods([]);
+    if (isAscending) {
+      setGoods(
+        list.sort((a, b) => Number(a.discountRate) - Number(b.discountRate))
+      );
+    } else {
+      setGoods(
+        list.sort((a, b) => Number(b.discountRate) - Number(a.discountRate))
+      );
+    }
+  };
 
   const getGoods = async () => {
     setLoading(true);
@@ -20,7 +43,11 @@ function AdminGoods() {
     try {
       const res = await kyApi.get(listUrl, { searchParams: data }).json();
       console.log(res);
-      setGoods(res.goodsList);
+      setGoods(
+        res.goodsList.sort(
+          (a, b) => Number(a.discountRate) - Number(b.discountRate)
+        )
+      );
     } catch (error) {
       console.log(error);
     }
@@ -36,7 +63,13 @@ function AdminGoods() {
               <th>브랜드</th>
               <th>상품명</th>
               <th>정가</th>
-              <th>할인율</th>
+              <th
+                className="hover:cursor-pointer"
+                onClick={setIsAscending(!isAscending)}
+              >
+                할인율
+                <>{isAscending ? <FaSortNumericDown /> : <FaSortNumericUp />}</>
+              </th>
               <th>할인가</th>
             </tr>
           </thead>
