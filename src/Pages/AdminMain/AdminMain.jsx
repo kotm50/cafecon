@@ -58,7 +58,7 @@ function AdminMain() {
           <Link
             to={"/admin/goodsList"}
             className={`p-2 text-center  border border-gray-500 hover:bg-opacity-50 ${
-              thisLocation.pathname.split("/")[2] === "userlist"
+              thisLocation.pathname.split("/")[2] === "goodsList"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200"
             }`}
