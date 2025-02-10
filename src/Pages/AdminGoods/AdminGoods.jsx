@@ -7,35 +7,13 @@ function AdminGoods() {
   const [loading, setLoading] = useState();
   const [goods, setGoods] = useState([]);
   const [isAscending, setIsAscending] = useState(true);
-
   useEffect(() => {
-    getGoods();
-  }, []);
-
-  useEffect(() => {
-    if (goods.length > 0) {
-      sortGoods();
-    }
-    //eslint-disable-next-line
+    getGoods(isAscending);
   }, [isAscending]);
 
-  const sortGoods = () => {
-    let list = goods;
-    setGoods([]);
-    if (isAscending) {
-      setGoods(
-        list.sort((a, b) => Number(a.discountRate) - Number(b.discountRate))
-      );
-    } else {
-      setGoods(
-        list.sort((a, b) => Number(b.discountRate) - Number(a.discountRate))
-      );
-    }
-  };
-
-  const getGoods = async () => {
+  const getGoods = async ascending => {
     setLoading(true);
-    let listUrl = "/biz/v1/shop/goods/list";
+    const listUrl = "/biz/v1/shop/goods/list";
     const data = {
       page: 1,
       size: 99999,
@@ -43,15 +21,21 @@ function AdminGoods() {
     try {
       const res = await kyApi.get(listUrl, { searchParams: data }).json();
       console.log(res);
-      setGoods(
-        res.goodsList.sort(
-          (a, b) => Number(a.discountRate) - Number(b.discountRate)
-        )
-      );
+
+      const sortedGoods = res.goodsList
+        .slice() // 원본 배열 변경 방지
+        .sort((a, b) =>
+          ascending
+            ? Number(a.discountRate) - Number(b.discountRate)
+            : Number(b.discountRate) - Number(a.discountRate)
+        );
+
+      setGoods(sortedGoods);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
   return (
     <>
@@ -64,11 +48,17 @@ function AdminGoods() {
               <th>상품명</th>
               <th>정가</th>
               <th
-                className="hover:cursor-pointer"
-                onClick={setIsAscending(!isAscending)}
+                className="hover:cursor-pointer flex justify-center gap-x-2 items-center"
+                onClick={() => setIsAscending(prev => !prev)}
               >
                 할인율
-                <>{isAscending ? <FaSortNumericDown /> : <FaSortNumericUp />}</>
+                <>
+                  {isAscending ? (
+                    <FaSortNumericDown size={20} />
+                  ) : (
+                    <FaSortNumericUp size={20} />
+                  )}
+                </>
               </th>
               <th>할인가</th>
             </tr>
