@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UploadFile from "../../Components/UploadFile";
 import Modal from "../Modal";
-import { smsAuth, smsCert } from "../../Api/Auth";
+import { smsAuth, smsCert, chkPhoneNum } from "../../Api/Auth";
 import { deleteFile, kyApi, uploadFile, useLogout } from "../../Api/Api";
 import PopupDom from "../../Api/Kakao/PopupDom";
 import PopupPostCode from "../../Api/Kakao/PopupPostCode";
@@ -161,6 +161,10 @@ function EditUser(props) {
   };
 
   const getCert = async () => {
+    const chkNum = await chkPhoneNum(phone);
+    if (!chkNum) {
+      return alert("휴대폰 번호를 정확히 입력해 주세요");
+    }
     if (!phone || phone.length !== 11) {
       return alert("휴대폰 번호를 정확히 입력해 주세요");
     }

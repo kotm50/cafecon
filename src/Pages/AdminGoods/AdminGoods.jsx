@@ -46,6 +46,7 @@ function AdminGoods() {
               <th>카테고리</th>
               <th>브랜드</th>
               <th>상품명</th>
+              <th>소비자가</th>
               <th>정가</th>
               <th
                 className="hover:cursor-pointer flex justify-center gap-x-2 items-center"
@@ -69,6 +70,9 @@ function AdminGoods() {
                 <td className="center">{item.goodsTypeDtlNm}</td>
                 <td className="center">{item.brandName}</td>
                 <td>{item.goodsName}</td>
+                <td className="right">
+                  {Number(item.salePrice).toLocaleString()}원
+                </td>
                 <td className="right">
                   {Number(item.realPrice).toLocaleString()}원
                 </td>

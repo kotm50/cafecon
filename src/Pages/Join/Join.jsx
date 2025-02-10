@@ -4,7 +4,7 @@ import PopupPostCode from "../../Api/Kakao/PopupPostCode";
 import { useState } from "react";
 import UploadFile from "../../Components/UploadFile";
 import { useNavigate } from "react-router-dom";
-import { smsAuth, smsCert } from "../../Api/Auth";
+import { smsAuth, smsCert, chkPhoneNum } from "../../Api/Auth";
 import { deleteFile, kyApi, uploadFile } from "../../Api/Api";
 import { Helmet } from "react-helmet";
 
@@ -279,6 +279,8 @@ function Join() {
   };
 
   const checkDupPhone = async phone => {
+    const chk = await chkPhoneNum(phone);
+    if (!chk) return alert("잘못된 양식입니다. 다시 시도해 주세요");
     const data = {
       phone,
     };
