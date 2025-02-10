@@ -246,8 +246,6 @@ function Join() {
   };
 
   const getCert = async () => {
-    const chk = await chkPhoneNum(phone);
-    if (!chk) return alert("잘못된 양식입니다. 다시 시도해 주세요");
     if (!id) {
       return alert("아이디를 입력해 주세요");
     }
@@ -263,6 +261,9 @@ function Join() {
     if (!phone) {
       return alert("휴대폰 번호를 입력해 주세요");
     }
+
+    const chk = await chkPhoneNum(phone);
+    if (!chk) return alert("잘못된 양식입니다. 다시 시도해 주세요");
     setPhoneCertChk(false);
     setPhoneCert("");
     const dup = await checkDupPhone(phone);
